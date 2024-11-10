@@ -1,0 +1,4 @@
+int x = 3;
+float y = 4.0;
+z = x + y;
+int z = 43;

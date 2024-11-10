@@ -1,0 +1,10 @@
+ProgramStart.           Program ::= [Stm];
+terminator nonempty Stm ";";
+
+VarDeclaration.         Stm ::= Decl;
+Assignment.             Stm ::= Ass;
+
+IntVarDeclaration.      Decl ::= "int" Ident "=" Integer;
+FloatVarDeclaration.    Decl ::= "float" Ident "=" Double;
+
+SumAssignment.          Ass ::= Ident "=" Ident "+" Ident;
