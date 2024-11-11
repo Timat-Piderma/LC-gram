@@ -46,6 +46,7 @@ import LexGram
 %attribute attr { a }
 %attribute err { [String] }
 %attribute env { Env.EnvT }
+%attribute modifiedEnv { Env.EnvT }
 %attribute ident { String }
 
 %%
@@ -94,7 +95,7 @@ ListStm : Stm ';'
     $$.attr = (:) $1.attr $3.attr;
 
     $1.env = $$.env;
-    $3.env = Env.insertVar $1.ident (123, 123) $$.env;
+    $3.env = $1.modifiedEnv;
 
     $$.err = if Env.containsVar $1.ident $$.env
       then ["contains " ++ $1.ident ++ " = " ++ (show (Env.getVarPos $1.ident $$.env))] ++ $3.err
@@ -107,6 +108,7 @@ Stm: Decl
     $$.attr = AbsGram.VarDeclaration $1.attr;
 
     $1.env = $$.env; 
+    $$.modifiedEnv = $1.modifiedEnv;
 
     $$.err = $1.err;
 
@@ -117,6 +119,7 @@ Stm: Decl
     $$.attr = AbsGram.Assignment $1.attr;
 
     $1.env = $$.env;
+    $$.modifiedEnv = $1.modifiedEnv;
 
     $$.err = $1.err;
 
@@ -130,6 +133,8 @@ Decl: 'int' Ident '=' Integer
     $2.env = $$.env;
     $4.env = $$.env;
 
+    $$.modifiedEnv = Env.insertVar $2.ident (123,123) $$.env;
+
     $$.err = $4.err;
 
     $$.ident = $2.ident;
@@ -140,6 +145,8 @@ Decl: 'int' Ident '=' Integer
 
     $2.env = $$.env;
     $4.env = $$.env;
+
+    $$.modifiedEnv = Env.insertVar $2.ident (123,123) $$.env;
 
     $$.err = $4.err;
 
@@ -153,6 +160,8 @@ Ass : Ident '=' Ident '+' Ident
     $1.env = $$.env;
     $3.env = $$.env;
     $5.env = $$.env;
+
+    $$.modifiedEnv = Env.insertVar $1.ident (123,123) $$.env;
 
     $$.err = ["Assignment"];
 
