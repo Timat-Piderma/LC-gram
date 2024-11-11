@@ -164,4 +164,4 @@ instance Print AbsGram.Ass where
 
 instance Print AbsGram.Result where
   prt i = \case
-    AbsGram.Result prog env err ->  prt i prog
+    AbsGram.Result prog err ->  prt i prog

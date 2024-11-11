@@ -74,7 +74,7 @@ Integer  : L_integ
 
 Program : ListStm 
   { 
-    $$.res = AbsGram.Result (AbsGram.ProgramStart $1.attr) $1.env $1.err;
+    $$.res = AbsGram.Result (AbsGram.ProgramStart $1.attr) $1.err;
     $1.env = Env.emptyEnv;
   }
 

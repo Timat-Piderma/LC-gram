@@ -175,7 +175,7 @@ happyReduce_8 = happySpecReduce_1  3# happyReduction_8
 happyReduction_8 happy_x_1
 	 =  case happyOut12 happy_x_1 of { happy_var_1 -> 
 	happyIn11
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ res = AbsGram.Result (AbsGram.ProgramStart (attr happySubAttrs_1) ) (env happySubAttrs_1) (err happySubAttrs_1)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = Env.emptyEnv  }; happyConditions = [] Prelude.++ happyConditions_1 } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ res = AbsGram.Result (AbsGram.ProgramStart (attr happySubAttrs_1) ) (err happySubAttrs_1)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = Env.emptyEnv  }; happyConditions = [] Prelude.++ happyConditions_1 } in (happyConditions,happySelfAttrs)
 	)}
 
 #if __GLASGOW_HASKELL__ >= 710
@@ -197,7 +197,7 @@ happyReduction_10 happy_x_3
 	 =  case happyOut13 happy_x_1 of { happy_var_1 -> 
 	case happyOut12 happy_x_3 of { happy_var_3 -> 
 	happyIn12
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ err = if Env.containsVar (ident happySubAttrs_1) (env happySelfAttrs) then ["contains " ++ (ident happySubAttrs_1) ++ " =" ++ (show (Env.getVarPos (ident happySubAttrs_1) (env happySelfAttrs) ))] ++ (err happySubAttrs_3) else ["does not contain " ++ (ident happySubAttrs_1) ] ++ (err happySubAttrs_3) , attr = (:) (attr happySubAttrs_1) (attr happySubAttrs_3)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = Env.insertVar (ident happySubAttrs_1) (123, 123 ) (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_3 } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ err = if Env.containsVar (ident happySubAttrs_1) (env happySelfAttrs) then ["contains " ++ (ident happySubAttrs_1) ++ " =" ++ (show (Env.getVarPos (ident happySubAttrs_1) (env happySelfAttrs) ))] ++ (err happySubAttrs_3) else ["does not contain " ++ (ident happySubAttrs_1) ] ++ (err happySubAttrs_3) , attr = (:) (attr happySubAttrs_1) (attr happySubAttrs_3)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = Env.insertVar (ident happySubAttrs_1) (123, 123) (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_3 } in (happyConditions,happySelfAttrs)
 	)}}
 
 #if __GLASGOW_HASKELL__ >= 710

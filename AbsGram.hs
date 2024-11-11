@@ -28,5 +28,5 @@ data Ass = SumAssignment Ident Ident Ident
 newtype Ident = Ident String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
-data Result = Result {prog :: Program, env :: E.EnvT, err :: [String]  }
+data Result = Result {prog :: Program, err :: [String]  }
   deriving (C.Show)
