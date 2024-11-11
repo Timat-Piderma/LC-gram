@@ -45,8 +45,8 @@ import LexGram
 %attribute res { Abs.Result }
 %attribute attr { a }
 %attribute err { [String] }
-%attribute e { E.EnvT }
-%attribute modifiedE { E.EnvT }
+%attribute env { E.EnvT }
+%attribute modifiedEnv { E.EnvT }
 %attribute ident { String }
 
 %%
@@ -76,7 +76,7 @@ Integer  : L_integ
 Program : ListStm 
   { 
     $$.res = Abs.Result (Abs.ProgramStart $1.attr) $1.err;
-    $1.e = E.emptyEnv;
+    $1.env = E.emptyEnv;
   }
 
 
@@ -84,9 +84,9 @@ ListStm : Stm ';'
   { 
     $$.attr = (:[]) $1.attr;
 
-    $1.e = $$.e;
+    $1.env = $$.env;
 
-    $$.err = if E.containsVar $1.ident $$.e
+    $$.err = if E.containsVar $1.ident $$.env
       then ["contains "++ $1.ident]
       else ["does not contain " ++ $1.ident];
   } 
@@ -94,11 +94,11 @@ ListStm : Stm ';'
   { 
     $$.attr = (:) $1.attr $3.attr;
 
-    $1.e = $$.e;
-    $3.e = $1.modifiedE;
+    $1.env = $$.env;
+    $3.env = $1.modifiedEnv;
 
-    $$.err = if E.containsVar $1.ident $$.e
-      then ["contains " ++ $1.ident ++ " = " ++ (show (E.getVarPos $1.ident $$.e))] ++ $3.err
+    $$.err = if E.containsVar $1.ident $$.env
+      then ["contains " ++ $1.ident ++ " = " ++ (show (E.getVarPos $1.ident $$.env))] ++ $3.err
       else ["does not contain " ++ $1.ident] ++ $3.err;
   }
 
@@ -107,8 +107,8 @@ Stm: Decl
   { 
     $$.attr = Abs.VarDeclaration $1.attr;
 
-    $1.e = $$.e; 
-    $$.modifiedE = $1.modifiedE;
+    $1.env = $$.env; 
+    $$.modifiedEnv = $1.modifiedEnv;
 
     $$.err = $1.err;
 
@@ -118,8 +118,8 @@ Stm: Decl
   { 
     $$.attr = Abs.Assignment $1.attr;
 
-    $1.e = $$.e;
-    $$.modifiedE = $1.modifiedE;
+    $1.env = $$.env;
+    $$.modifiedEnv = $1.modifiedEnv;
 
     $$.err = $1.err;
 
@@ -130,10 +130,10 @@ Decl: 'int' Ident '=' Integer
   {
     $$.attr = Abs.IntVarDeclaration $2.attr $4.attr;
 
-    $2.e = $$.e;
-    $4.e = $$.e;
+    $2.env = $$.env;
+    $4.env = $$.env;
 
-    $$.modifiedE = E.insertVar $2.ident (123,123) $$.e;
+    $$.modifiedEnv = E.insertVar $2.ident (123,123) $$.env;
 
     $$.err = $4.err;
 
@@ -143,10 +143,10 @@ Decl: 'int' Ident '=' Integer
   {
     $$.attr = Abs.FloatVarDeclaration $2.attr $4.attr;
 
-    $2.e = $$.e;
-    $4.e = $$.e;
+    $2.env = $$.env;
+    $4.env = $$.env;
 
-    $$.modifiedE = E.insertVar $2.ident (123,123) $$.e;
+    $$.modifiedEnv = E.insertVar $2.ident (123,123) $$.env;
 
     $$.err = $4.err;
 
@@ -157,11 +157,11 @@ Ass : Ident '=' Ident '+' Ident
   {  
     $$.attr = Abs.SumAssignment $1.attr $3.attr $5.attr;
 
-    $1.e = $$.e;
-    $3.e = $$.e;
-    $5.e = $$.e;
+    $1.env = $$.env;
+    $3.env = $$.env;
+    $5.env = $$.env;
 
-    $$.modifiedE = E.insertVar $1.ident (123,123) $$.e;
+    $$.modifiedEnv = E.insertVar $1.ident (123,123) $$.env;
 
     $$.err = ["Assignment"];
 
