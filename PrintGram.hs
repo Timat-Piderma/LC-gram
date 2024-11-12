@@ -161,7 +161,3 @@ instance Print AbsGram.Decl where
 instance Print AbsGram.Ass where
   prt i = \case
     AbsGram.SumAssignment id_1 id_2 id_3 -> prPrec i 0 (concatD [prt 0 id_1, doc (showString "="), prt 0 id_2, doc (showString "+"), prt 0 id_3])
-
-instance Print AbsGram.Result where
-  prt i = \case
-    AbsGram.Result prog err ->  prt i prog
