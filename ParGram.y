@@ -5,15 +5,7 @@
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 {-# LANGUAGE PatternSynonyms #-}
 
-module ParGram
-  ( happyError
-  , myLexer
-  , pProgram
-  , pListStm
-  , pStm
-  , pDecl
-  , pAss
-  ) where
+module ParGram where
 
 import Prelude
 
@@ -42,19 +34,21 @@ import LexGram
   L_integ  { PT _ (TI $$)  }
 
 %attributetype {Attr a}
-%attribute res { Abs.Result }
+%attribute res { Result }
 %attribute attr { a }
 %attribute err { [String] }
 %attribute env { E.EnvT }
 %attribute modifiedEnv { E.EnvT }
 %attribute ident { String }
-
+%attribute pos { Posn }
 %%
 
 Ident  : L_Ident 
   { 
     $$.attr = Abs.Ident $1;
+
     $$.ident = $1;
+
     $$.err = ["--IDENT--"];
   }
 
@@ -75,7 +69,7 @@ Integer  : L_integ
 
 Program : ListStm 
   { 
-    $$.res = Abs.Result (Abs.ProgramStart $1.attr) $1.err;
+    $$.res = Result (Abs.ProgramStart $1.attr) $1.err;
     $1.env = E.emptyEnv;
   }
 
@@ -87,7 +81,7 @@ ListStm : Stm ';'
     $1.env = $$.env;
 
     $$.err = if E.containsVar $1.ident $$.env
-      then ["contains "++ $1.ident]
+      then ["contains "++ $1.ident ++ " declared at " ++ (show (E.getVarPos $1.ident $$.env))]
       else ["does not contain " ++ $1.ident];
   } 
 | Stm ';' ListStm 
@@ -98,7 +92,7 @@ ListStm : Stm ';'
     $3.env = $1.modifiedEnv;
 
     $$.err = if E.containsVar $1.ident $$.env
-      then ["contains " ++ $1.ident ++ " = " ++ (show (E.getVarPos $1.ident $$.env))] ++ $3.err
+      then ["contains " ++ $1.ident ++ " declared at " ++ (show (E.getVarPos $1.ident $$.env))] ++ $3.err
       else ["does not contain " ++ $1.ident] ++ $3.err;
   }
 
@@ -133,11 +127,13 @@ Decl: 'int' Ident '=' Integer
     $2.env = $$.env;
     $4.env = $$.env;
 
-    $$.modifiedEnv = E.insertVar $2.ident (123,123) $$.env;
+    $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.env;
 
     $$.err = $4.err;
 
     $$.ident = $2.ident;
+
+    $$.pos = tokenPosn $1;
   }
   | 'float' Ident '=' Double 
   {
@@ -146,11 +142,13 @@ Decl: 'int' Ident '=' Integer
     $2.env = $$.env;
     $4.env = $$.env;
 
-    $$.modifiedEnv = E.insertVar $2.ident (123,123) $$.env;
+    $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.env;
 
     $$.err = $4.err;
 
     $$.ident = $2.ident;
+
+    $$.pos = tokenPosn $1;
   }
 
 Ass : Ident '=' Ident '+' Ident 
@@ -161,14 +159,19 @@ Ass : Ident '=' Ident '+' Ident
     $3.env = $$.env;
     $5.env = $$.env;
 
-    $$.modifiedEnv = E.insertVar $1.ident (123,123) $$.env;
+    $$.modifiedEnv = E.insertVar $1.ident (posLineCol $$.pos) $$.env;
 
     $$.err = ["Assignment"];
 
     $$.ident = $1.ident;
+
+    $$.pos = tokenPosn $2;
+    
   }
 
 {
+
+data Result = Result Abs.Program [String] deriving (Show)
 
 type Err = Either String
 
