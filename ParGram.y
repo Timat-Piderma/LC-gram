@@ -50,6 +50,8 @@ Ident  : L_Ident
     $$.ident = $1;
 
     $$.err = ["--IDENT--"];
+
+    $$.pos = $1;
   }
 
 Double   : L_doubl  
@@ -133,7 +135,7 @@ Decl: 'int' Ident '=' Integer
 
     $$.ident = $2.ident;
 
-    $$.pos = tokenPosn $1;
+    $$.pos = $2.pos;
   }
   | 'float' Ident '=' Double 
   {
@@ -148,7 +150,7 @@ Decl: 'int' Ident '=' Integer
 
     $$.ident = $2.ident;
 
-    $$.pos = tokenPosn $1;
+    $$.pos = $2.pos;
   }
 
 Ass : Ident '=' Ident '+' Ident 
@@ -165,7 +167,7 @@ Ass : Ident '=' Ident '+' Ident
 
     $$.ident = $1.ident;
 
-    $$.pos = tokenPosn $2;
+    $$.pos = $1.pos;
     
   }
 
