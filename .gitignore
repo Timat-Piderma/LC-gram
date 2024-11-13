@@ -1,0 +1,16 @@
+# Ignora tutto
+/*
+
+# Escludi dalla ignoranza i file specificati
+!AbsGram.hs
+!Env.hs
+!ErrM.hs
+!LexGram.hs
+!LexGram.x
+!Makefile
+!ParGram.hs
+!ParGram.y
+!PrintGram.hs
+!SkelGram.hs
+!TestGram.hs
+!gram.cf
