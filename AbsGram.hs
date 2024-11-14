@@ -7,7 +7,6 @@
 module AbsGram where
 
 import Prelude (Double, Integer, String)
-import qualified Env as E
 import qualified Prelude as C (Eq, Ord, Show, Read)
 import qualified Data.String
 
@@ -27,3 +26,6 @@ data Ass = SumAssignment Ident Ident Ident
 
 newtype Ident = Ident String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
+
+data BasicType = ERROR | INT | FLOAT 
+  deriving (C.Eq, C.Show, C.Read)
