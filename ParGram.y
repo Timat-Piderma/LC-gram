@@ -41,6 +41,7 @@ import LexGram
 %attribute modifiedEnv { E.EnvT }
 %attribute ident { String }
 %attribute pos { Posn }
+%attribute btype { Abs.BasicType }
 %%
 
 Ident  : L_Ident 
@@ -59,6 +60,8 @@ Double   : L_doubl
     $$.attr = (read $1) :: Double;
     
     $$.err = ["--DOUBLE--"];
+
+    $$.btype = Abs.FLOAT;
   }
 
 Integer  : L_integ  
@@ -66,6 +69,8 @@ Integer  : L_integ
     $$.attr = (read $1) :: Integer;
     
     $$.err = ["--INTEGER--"];
+
+    $$.btype = Abs.INT;
   }
 
 
@@ -82,10 +87,14 @@ ListStm : Stm ';'
 
     $1.env = $$.env;
 
+   
+
     $$.err = if E.containsVar $1.ident $$.env
-      then ["contains "++ $1.ident ++ " declared at " ++ (show (E.getVarPos $1.ident $$.env))]
+      then ["contains "++ $1.ident ++ " declared at " ++ (show (E.getVarPos $1.ident $$.env)) ++ " of type: " ++ (E.typeToString(E.getVarType $1.ident $$.env))]
       else ["does not contain " ++ $1.ident];
   } 
+  -- $$.err = $1.err;
+
 | Stm ';' ListStm 
   { 
     $$.attr = (:) $1.attr $3.attr;
@@ -93,11 +102,13 @@ ListStm : Stm ';'
     $1.env = $$.env;
     $3.env = $1.modifiedEnv;
 
+    
+
     $$.err = if E.containsVar $1.ident $$.env
       then ["contains " ++ $1.ident ++ " declared at " ++ (show (E.getVarPos $1.ident $$.env))] ++ $3.err
       else ["does not contain " ++ $1.ident] ++ $3.err;
   }
-
+--$$.err = $1.err ++ $3.err;
 
 Stm: Decl
   { 
@@ -129,13 +140,15 @@ Decl: 'int' Ident '=' Integer
     $2.env = $$.env;
     $4.env = $$.env;
 
-    $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.env;
+    $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
 
     $$.err = $4.err;
 
     $$.ident = $2.ident;
 
     $$.pos = $2.pos;
+
+    $$.btype = $4.btype;
   }
   | 'float' Ident '=' Double 
   {
@@ -144,13 +157,15 @@ Decl: 'int' Ident '=' Integer
     $2.env = $$.env;
     $4.env = $$.env;
 
-    $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.env;
+    $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
 
     $$.err = $4.err;
 
     $$.ident = $2.ident;
 
     $$.pos = $2.pos;
+
+    $$.btype = $4.btype;
   }
 
 Ass : Ident '=' Ident '+' Ident 
@@ -161,13 +176,15 @@ Ass : Ident '=' Ident '+' Ident
     $3.env = $$.env;
     $5.env = $$.env;
 
-    $$.modifiedEnv = E.insertVar $1.ident (posLineCol $$.pos) $$.env;
+    $$.modifiedEnv = E.insertVar $1.ident (posLineCol $$.pos) $$.btype $$.env;
 
     $$.err = ["Assignment"];
 
     $$.ident = $1.ident;
 
     $$.pos = $1.pos;
+
+    $$.btype = E.sup (E.getVarType $3.ident $$.env) (E.getVarType $5.ident $$.env)
     
   }
 

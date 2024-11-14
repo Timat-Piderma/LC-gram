@@ -149,7 +149,7 @@ happyReduce_6 = happySpecReduce_1  1# happyReduction_6
 happyReduction_6 happy_x_1
 	 =  case happyOutTok happy_x_1 of { (PT _ (TD happy_var_1)) -> 
 	happyIn9
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ err = ["--DOUBLE--"] , attr = (read happy_var_1 ) :: Double  }; happyConditions = [] } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = Abs.FLOAT , err = ["--DOUBLE--"] , attr = (read happy_var_1 ) :: Double  }; happyConditions = [] } in (happyConditions,happySelfAttrs)
 	)}
 
 #if __GLASGOW_HASKELL__ >= 710
@@ -158,7 +158,7 @@ happyReduce_7 = happySpecReduce_1  2# happyReduction_7
 happyReduction_7 happy_x_1
 	 =  case happyOutTok happy_x_1 of { (PT _ (TI happy_var_1)) -> 
 	happyIn10
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ err = ["--INTEGER--"] , attr = (read happy_var_1 ) :: Integer  }; happyConditions = [] } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = Abs.INT , err = ["--INTEGER--"] , attr = (read happy_var_1 ) :: Integer  }; happyConditions = [] } in (happyConditions,happySelfAttrs)
 	)}
 
 #if __GLASGOW_HASKELL__ >= 710
@@ -177,7 +177,7 @@ happyReduction_9 happy_x_2
 	happy_x_1
 	 =  case happyOut13 happy_x_1 of { happy_var_1 -> 
 	happyIn12
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ err = if E.containsVar (ident happySubAttrs_1) (env happySelfAttrs) then ["contains "++ (ident happySubAttrs_1) ++ " declared at " ++ (show (E.getVarPos (ident happySubAttrs_1) (env happySelfAttrs) ))] else ["does not contain " ++ (ident happySubAttrs_1) ] , attr = (:[]) (attr happySubAttrs_1)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ err = if E.containsVar (ident happySubAttrs_1) (env happySelfAttrs) then ["contains "++ (ident happySubAttrs_1) ++ " declared at " ++ (show (E.getVarPos (ident happySubAttrs_1) (env happySelfAttrs) )) ++ " of type: " ++ (E.typeToString(E.getVarType (ident happySubAttrs_1) (env happySelfAttrs) ))] else ["does not contain " ++ (ident happySubAttrs_1) ] , attr = (:[]) (attr happySubAttrs_1)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 } in (happyConditions,happySelfAttrs)
 	)}
 
 #if __GLASGOW_HASKELL__ >= 710
@@ -221,7 +221,7 @@ happyReduction_13 (happy_x_4 `HappyStk`
 	 = case happyOut8 happy_x_2 of { happy_var_2 -> 
 	case happyOut10 happy_x_4 of { happy_var_4 -> 
 	happyIn14
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ pos = (pos happySubAttrs_2) , ident = (ident happySubAttrs_2) , err = (err happySubAttrs_4) , modifiedEnv = E.insertVar (ident happySubAttrs_2) (posLineCol (pos happySelfAttrs) ) (env happySelfAttrs) , attr = Abs.IntVarDeclaration (attr happySubAttrs_2) (attr happySubAttrs_4)  }; (happyConditions_2,happySubAttrs_2) = happy_var_2 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_4,happySubAttrs_4) = happy_var_4 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_2 Prelude.++ happyConditions_4 } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = (btype happySubAttrs_4) , pos = (pos happySubAttrs_2) , ident = (ident happySubAttrs_2) , err = (err happySubAttrs_4) , modifiedEnv = E.insertVar (ident happySubAttrs_2) (posLineCol (pos happySelfAttrs) ) (btype happySelfAttrs) (env happySelfAttrs) , attr = Abs.IntVarDeclaration (attr happySubAttrs_2) (attr happySubAttrs_4)  }; (happyConditions_2,happySubAttrs_2) = happy_var_2 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_4,happySubAttrs_4) = happy_var_4 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_2 Prelude.++ happyConditions_4 } in (happyConditions,happySelfAttrs)
 	) `HappyStk` happyRest}}
 
 #if __GLASGOW_HASKELL__ >= 710
@@ -235,7 +235,7 @@ happyReduction_14 (happy_x_4 `HappyStk`
 	 = case happyOut8 happy_x_2 of { happy_var_2 -> 
 	case happyOut9 happy_x_4 of { happy_var_4 -> 
 	happyIn14
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ pos = (pos happySubAttrs_2) , ident = (ident happySubAttrs_2) , err = (err happySubAttrs_4) , modifiedEnv = E.insertVar (ident happySubAttrs_2) (posLineCol (pos happySelfAttrs) ) (env happySelfAttrs) , attr = Abs.FloatVarDeclaration (attr happySubAttrs_2) (attr happySubAttrs_4)  }; (happyConditions_2,happySubAttrs_2) = happy_var_2 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_4,happySubAttrs_4) = happy_var_4 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_2 Prelude.++ happyConditions_4 } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = (btype happySubAttrs_4) , pos = (pos happySubAttrs_2) , ident = (ident happySubAttrs_2) , err = (err happySubAttrs_4) , modifiedEnv = E.insertVar (ident happySubAttrs_2) (posLineCol (pos happySelfAttrs) ) (btype happySelfAttrs) (env happySelfAttrs) , attr = Abs.FloatVarDeclaration (attr happySubAttrs_2) (attr happySubAttrs_4)  }; (happyConditions_2,happySubAttrs_2) = happy_var_2 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_4,happySubAttrs_4) = happy_var_4 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_2 Prelude.++ happyConditions_4 } in (happyConditions,happySelfAttrs)
 	) `HappyStk` happyRest}}
 
 #if __GLASGOW_HASKELL__ >= 710
@@ -251,7 +251,7 @@ happyReduction_15 (happy_x_5 `HappyStk`
 	case happyOut8 happy_x_3 of { happy_var_3 -> 
 	case happyOut8 happy_x_5 of { happy_var_5 -> 
 	happyIn15
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ pos = (pos happySubAttrs_1) , ident = (ident happySubAttrs_1) , err = ["Assignment"] , modifiedEnv = E.insertVar (ident happySubAttrs_1) (posLineCol (pos happySelfAttrs) ) (env happySelfAttrs) , attr = Abs.SumAssignment (attr happySubAttrs_1) (attr happySubAttrs_3) (attr happySubAttrs_5)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_5,happySubAttrs_5) = happy_var_5 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_3 Prelude.++ happyConditions_5 } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = E.sup (E.getVarType (ident happySubAttrs_3) (env happySelfAttrs) ) (E.getVarType (ident happySubAttrs_5) (env happySelfAttrs) ) , pos = (pos happySubAttrs_1) , ident = (ident happySubAttrs_1) , err = ["Assignment"] , modifiedEnv = E.insertVar (ident happySubAttrs_1) (posLineCol (pos happySelfAttrs) ) (btype happySelfAttrs) (env happySelfAttrs) , attr = Abs.SumAssignment (attr happySubAttrs_1) (attr happySubAttrs_3) (attr happySubAttrs_5)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_5,happySubAttrs_5) = happy_var_5 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_3 Prelude.++ happyConditions_5 } in (happyConditions,happySelfAttrs)
 	) `HappyStk` happyRest}}}
 
 happyNewToken action sts stk [] =
@@ -310,8 +310,8 @@ pAss toks = do { f <- do_pAss toks; let { (conds,attrs) = f happyEmptyAttrs } in
 
 happySeq = happyDontSeq
 
-data Attr a = HappyAttributes {res :: Result, attr :: a, err :: [String], env :: E.EnvT, modifiedEnv :: E.EnvT, ident :: String, pos :: Posn}
-happyEmptyAttrs = HappyAttributes {res = Prelude.error "invalid reference to attribute 'res'", attr = Prelude.error "invalid reference to attribute 'attr'", err = Prelude.error "invalid reference to attribute 'err'", env = Prelude.error "invalid reference to attribute 'env'", modifiedEnv = Prelude.error "invalid reference to attribute 'modifiedEnv'", ident = Prelude.error "invalid reference to attribute 'ident'", pos = Prelude.error "invalid reference to attribute 'pos'"}
+data Attr a = HappyAttributes {res :: Result, attr :: a, err :: [String], env :: E.EnvT, modifiedEnv :: E.EnvT, ident :: String, pos :: Posn, btype :: Abs.BasicType}
+happyEmptyAttrs = HappyAttributes {res = Prelude.error "invalid reference to attribute 'res'", attr = Prelude.error "invalid reference to attribute 'attr'", err = Prelude.error "invalid reference to attribute 'err'", env = Prelude.error "invalid reference to attribute 'env'", modifiedEnv = Prelude.error "invalid reference to attribute 'modifiedEnv'", ident = Prelude.error "invalid reference to attribute 'ident'", pos = Prelude.error "invalid reference to attribute 'pos'", btype = Prelude.error "invalid reference to attribute 'btype'"}
 
 data Result = Result Abs.Program [String] deriving (Show)
 
