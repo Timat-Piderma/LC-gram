@@ -26,6 +26,3 @@ data Ass = SumAssignment Ident Ident Ident
 
 newtype Ident = Ident String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
-
-data BasicType = ERROR | INT | FLOAT 
-  deriving (C.Eq, C.Show, C.Read)
