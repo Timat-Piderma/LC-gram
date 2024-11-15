@@ -9,6 +9,7 @@ module ParGram where
 
 import Prelude
 
+import qualified TypeSystem as TS
 import qualified Env as E
 import qualified AbsGram as Abs 
 import LexGram
@@ -41,7 +42,7 @@ import LexGram
 %attribute modifiedEnv { E.EnvT }
 %attribute ident { String }
 %attribute pos { Posn }
-%attribute btype { Abs.BasicType }
+%attribute btype { TS.Type }
 %%
 
 Ident  : L_Ident 
@@ -61,7 +62,7 @@ Double   : L_doubl
     
     $$.err = ["--DOUBLE--"];
 
-    $$.btype = Abs.FLOAT;
+    $$.btype = (TS.Base TS.FLOAT);
   }
 
 Integer  : L_integ  
@@ -70,7 +71,7 @@ Integer  : L_integ
     
     $$.err = ["--INTEGER--"];
 
-    $$.btype = Abs.INT;
+    $$.btype = (TS.Base TS.INT);
   }
 
 
@@ -90,8 +91,8 @@ ListStm : Stm ';'
    
 
     $$.err = if E.containsVar $1.ident $$.env
-      then ["contains "++ $1.ident ++ " declared at " ++ (show (E.getVarPos $1.ident $$.env)) ++ " of type: " ++ (E.typeToString(E.getVarType $1.ident $$.env))]
-      else ["does not contain " ++ $1.ident];
+      then ["Environment already contains "++ $1.ident ++ " declared at " ++ (show (E.getVarPos $1.ident $$.env)) ++ " of type: " ++ (TS.typeToString(E.getVarType $1.ident $$.env))]
+      else $1.err;
   } 
   -- $$.err = $1.err;
 
@@ -105,8 +106,8 @@ ListStm : Stm ';'
     
 
     $$.err = if E.containsVar $1.ident $$.env
-      then ["contains " ++ $1.ident ++ " declared at " ++ (show (E.getVarPos $1.ident $$.env))] ++ $3.err
-      else ["does not contain " ++ $1.ident] ++ $3.err;
+      then ["Environment already contains " ++ $1.ident ++ " declared at " ++ (show (E.getVarPos $1.ident $$.env))] ++ $3.err
+      else $1.err ++ $3.err;
   }
 --$$.err = $1.err ++ $3.err;
 
@@ -184,7 +185,7 @@ Ass : Ident '=' Ident '+' Ident
 
     $$.pos = $1.pos;
 
-    $$.btype = E.sup (E.getVarType $3.ident $$.env) (E.getVarType $5.ident $$.env)
+    $$.btype = TS.sup (E.getVarType $3.ident $$.env) (E.getVarType $5.ident $$.env)
     
   }
 
