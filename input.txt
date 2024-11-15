@@ -1,4 +1,0 @@
-int x = 3;
-float y = 4.0;
-z = x + t;
-int z = 43;
