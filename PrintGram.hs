@@ -150,26 +150,34 @@ instance Print [AbsGram.Stm] where
 
 instance Print AbsGram.Stm where
   prt i = \case
-    AbsGram.VarDeclaration decl -> prPrec i 0 (concatD [prt 0 decl])
+    AbsGram.Declaration decl -> prPrec i 0 (concatD [prt 0 decl])
     AbsGram.Assignment ass -> prPrec i 0 (concatD [prt 0 ass])
+
+instance Print AbsGram.BasicType where
+  prt i = \case
+    AbsGram.BasicType_int -> prPrec i 0 (concatD [doc (showString "int")])
+    AbsGram.BasicType_float -> prPrec i 0 (concatD [doc (showString "float")])
+    AbsGram.BasicType_char -> prPrec i 0 (concatD [doc (showString "char")])
+    AbsGram.BasicType_String -> prPrec i 0 (concatD [doc (showString "String")])
+    AbsGram.BasicType_bool -> prPrec i 0 (concatD [doc (showString "bool")])
 
 instance Print AbsGram.Boolean where
   prt i = \case
-    AbsGram.Boolean_true -> prPrec i 0 (concatD [doc (showString "true")])
-    AbsGram.Boolean_false -> prPrec i 0 (concatD [doc (showString "false")])
+    AbsGram.Boolean_True -> prPrec i 0 (concatD [doc (showString "True")])
+    AbsGram.Boolean_False -> prPrec i 0 (concatD [doc (showString "False")])
+
+instance Print AbsGram.Value where
+  prt i = \case
+    AbsGram.ValueInteger n -> prPrec i 0 (concatD [prt 0 n])
+    AbsGram.ValueDouble d -> prPrec i 0 (concatD [prt 0 d])
+    AbsGram.ValueChar c -> prPrec i 0 (concatD [prt 0 c])
+    AbsGram.ValueString str -> prPrec i 0 (concatD [printString str])
+    AbsGram.ValueBoolean boolean -> prPrec i 0 (concatD [prt 0 boolean])
 
 instance Print AbsGram.Decl where
   prt i = \case
-    AbsGram.IntVarDeclaration id_ n -> prPrec i 0 (concatD [doc (showString "int"), prt 0 id_, doc (showString "="), prt 0 n])
-    AbsGram.FloatVarDeclaration id_ d -> prPrec i 0 (concatD [doc (showString "float"), prt 0 id_, doc (showString "="), prt 0 d])
-    AbsGram.CharVarDeclaration id_ c -> prPrec i 0 (concatD [doc (showString "char"), prt 0 id_, doc (showString "="), prt 0 c])
-    AbsGram.StringVarDeclaration id_ str -> prPrec i 0 (concatD [doc (showString "string"), prt 0 id_, doc (showString "="), printString str])
-    AbsGram.BooleanVarDeclaration id_ boolean -> prPrec i 0 (concatD [doc (showString "bool"), prt 0 id_, doc (showString "="), prt 0 boolean])
-    AbsGram.IntArrayDeclaration id_ n -> prPrec i 0 (concatD [doc (showString "int"), prt 0 id_, doc (showString "["), prt 0 n, doc (showString "]")])
-    AbsGram.FloatArrayDeclaration id_ n -> prPrec i 0 (concatD [doc (showString "float"), prt 0 id_, doc (showString "["), prt 0 n, doc (showString "]")])
-    AbsGram.CharArrayDeclaration id_ n -> prPrec i 0 (concatD [doc (showString "char"), prt 0 id_, doc (showString "["), prt 0 n, doc (showString "]")])
-    AbsGram.StringArrayDeclaration id_ n -> prPrec i 0 (concatD [doc (showString "string"), prt 0 id_, doc (showString "["), prt 0 n, doc (showString "]")])
-    AbsGram.BooleanArrayDeclaration id_ n -> prPrec i 0 (concatD [doc (showString "bool"), prt 0 id_, doc (showString "["), prt 0 n, doc (showString "]")])
+    AbsGram.VarDeclaration basictype id_ value -> prPrec i 0 (concatD [prt 0 basictype, prt 0 id_, doc (showString "="), prt 0 value])
+    AbsGram.ArrayDeclaration basictype id_ n -> prPrec i 0 (concatD [prt 0 basictype, prt 0 id_, doc (showString "["), prt 0 n, doc (showString "]")])
 
 instance Print AbsGram.Ass where
   prt i = \case

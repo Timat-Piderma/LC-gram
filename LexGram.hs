@@ -431,12 +431,12 @@ eitherResIdent tv s = treeFind resWords
 -- | The keywords and symbols of the language organized as binary search tree.
 resWords :: BTree
 resWords =
-  b "char" 7
-    (b "[" 4
-       (b ";" 2 (b "+" 1 N N) (b "=" 3 N N)) (b "bool" 6 (b "]" 5 N N) N))
-    (b "int" 10
-       (b "float" 9 (b "false" 8 N N) N)
-       (b "true" 12 (b "string" 11 N N) N))
+  b "[" 7
+    (b "False" 4
+       (b ";" 2 (b "+" 1 N N) (b "=" 3 N N))
+       (b "True" 6 (b "String" 5 N N) N))
+    (b "char" 10
+       (b "bool" 9 (b "]" 8 N N) N) (b "int" 12 (b "float" 11 N N) N))
   where
   b s n = B bs (TS bs n)
     where

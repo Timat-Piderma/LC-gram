@@ -25,26 +25,34 @@ transProgram x = case x of
 
 transStm :: AbsGram.Stm -> Result
 transStm x = case x of
-  AbsGram.VarDeclaration decl -> failure x
+  AbsGram.Declaration decl -> failure x
   AbsGram.Assignment ass -> failure x
+
+transBasicType :: AbsGram.BasicType -> Result
+transBasicType x = case x of
+  AbsGram.BasicType_int -> failure x
+  AbsGram.BasicType_float -> failure x
+  AbsGram.BasicType_char -> failure x
+  AbsGram.BasicType_String -> failure x
+  AbsGram.BasicType_bool -> failure x
 
 transBoolean :: AbsGram.Boolean -> Result
 transBoolean x = case x of
-  AbsGram.Boolean_true -> failure x
-  AbsGram.Boolean_false -> failure x
+  AbsGram.Boolean_True -> failure x
+  AbsGram.Boolean_False -> failure x
+
+transValue :: AbsGram.Value -> Result
+transValue x = case x of
+  AbsGram.ValueInteger integer -> failure x
+  AbsGram.ValueDouble double -> failure x
+  AbsGram.ValueChar char -> failure x
+  AbsGram.ValueString string -> failure x
+  AbsGram.ValueBoolean boolean -> failure x
 
 transDecl :: AbsGram.Decl -> Result
 transDecl x = case x of
-  AbsGram.IntVarDeclaration ident integer -> failure x
-  AbsGram.FloatVarDeclaration ident double -> failure x
-  AbsGram.CharVarDeclaration ident char -> failure x
-  AbsGram.StringVarDeclaration ident string -> failure x
-  AbsGram.BooleanVarDeclaration ident boolean -> failure x
-  AbsGram.IntArrayDeclaration ident integer -> failure x
-  AbsGram.FloatArrayDeclaration ident integer -> failure x
-  AbsGram.CharArrayDeclaration ident integer -> failure x
-  AbsGram.StringArrayDeclaration ident integer -> failure x
-  AbsGram.BooleanArrayDeclaration ident integer -> failure x
+  AbsGram.VarDeclaration basictype ident value -> failure x
+  AbsGram.ArrayDeclaration basictype ident integer -> failure x
 
 transAss :: AbsGram.Ass -> Result
 transAss x = case x of

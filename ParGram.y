@@ -5,17 +5,7 @@
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 {-# LANGUAGE PatternSynonyms #-}
 
-module ParGram
-  ( happyError
-  , myLexer
-  , pProgram
-  , pListStm
-  , pStm
-  , pBoolean
-  , pDecl
-  , pAss
-  , Result
-  ) where
+module ParGram where
 
 import Prelude
 
@@ -29,7 +19,9 @@ import LexGram
 %name pProgram Program
 %name pListStm ListStm
 %name pStm Stm
+%name pBasicType BasicType
 %name pBoolean Boolean
+%name pValue Value
 %name pDecl Decl
 %name pAss Ass
 -- no lexer declaration
@@ -39,15 +31,15 @@ import LexGram
   '+'      { PT _ (TS _ 1)  }
   ';'      { PT _ (TS _ 2)  }
   '='      { PT _ (TS _ 3)  }
-  '['      { PT _ (TS _ 4)  }
-  ']'      { PT _ (TS _ 5)  }
-  'bool'   { PT _ (TS _ 6)  }
-  'char'   { PT _ (TS _ 7)  }
-  'false'  { PT _ (TS _ 8)  }
-  'float'  { PT _ (TS _ 9)  }
-  'int'    { PT _ (TS _ 10) }
-  'string' { PT _ (TS _ 11) }
-  'true'   { PT _ (TS _ 12) }
+  'False'  { PT _ (TS _ 4)  }
+  'String' { PT _ (TS _ 5)  }
+  'True'   { PT _ (TS _ 6)  }
+  '['      { PT _ (TS _ 7)  }
+  ']'      { PT _ (TS _ 8)  }
+  'bool'   { PT _ (TS _ 9)  }
+  'char'   { PT _ (TS _ 10) }
+  'float'  { PT _ (TS _ 11) }
+  'int'    { PT _ (TS _ 12) }
   L_Ident  { PT _ (TV $$)   }
   L_charac { PT _ (TC $$)   }
   L_doubl  { PT _ (TD $$)   }
@@ -113,17 +105,17 @@ String   : L_quoted
     $$.btype = (TS.Base TS.STRING);
   }
 
-Boolean: 'true' 
+Boolean: 'True' 
   { 
-    $$.attr = Abs.Boolean_true;
+    $$.attr = Abs.Boolean_True;
 
     $$.err = ["--BOOLEAN--"];
 
     $$.btype = (TS.Base TS.BOOL);
   }
-  | 'false' 
+  | 'False' 
   { 
-    $$.attr = Abs.Boolean_false;
+    $$.attr = Abs.Boolean_False;
 
     $$.err = ["--BOOLEAN--"];
 
@@ -160,7 +152,7 @@ ListStm : Stm ';'
 
 Stm: Decl
   { 
-    $$.attr = Abs.VarDeclaration $1.attr;
+    $$.attr = Abs.Declaration $1.attr;
 
     $1.env = $$.env; 
     $$.modifiedEnv = $1.modifiedEnv;
@@ -181,12 +173,61 @@ Stm: Decl
     $$.ident = $1.ident;
   }
 
-Decl: 'int' Ident '=' Integer 
-  {
-    $$.attr = Abs.IntVarDeclaration $2.attr $4.attr;
+BasicType: 'int' 
+  { 
+    $$.attr = Abs.BasicType_int;
 
-    $2.env = $$.env;
-    $4.env = $$.env;
+    $$.btype = TS.Base TS.INT;
+  }
+  | 'float'   
+  { 
+    $$.attr = Abs.BasicType_float;
+
+    $$.btype = TS.Base TS.FLOAT;
+  }
+  | 'char'   
+  { 
+    $$.attr = Abs.BasicType_char;
+
+    $$.btype = TS.Base TS.CHAR;
+  }
+  | 'String'   
+  { 
+    $$.attr = Abs.BasicType_String;
+
+    $$.btype = TS.Base TS.STRING;
+  }
+  | 'bool'  
+  { 
+    $$.attr = Abs.BasicType_bool;
+
+    $$.btype = TS.Base TS.BOOL;
+  }
+
+Value: Integer 
+  { 
+    $$.attr = Abs.ValueInteger $1.attr;
+  }
+  | Double   
+  { 
+    $$.attr = Abs.ValueDouble $1.attr;
+  }
+  | Char   
+  { 
+    $$.attr = Abs.ValueChar $1.attr;
+  }
+  | String   
+  { 
+    $$.attr = Abs.ValueString $1.attr;
+  }
+  | Boolean   
+  { 
+    $$.attr = Abs.ValueBoolean $1.attr;
+  }
+
+Decl: BasicType Ident '=' Value 
+  {   
+    $$.attr = Abs.VarDeclaration $1.attr $2.attr $4.attr;
 
     $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
 
@@ -197,30 +238,10 @@ Decl: 'int' Ident '=' Integer
     $$.pos = $2.pos;
 
     $$.btype = $4.btype;
-  }
-  | 'float' Ident '=' Double 
-  {
-    $$.attr = Abs.FloatVarDeclaration $2.attr $4.attr;
-
-    $2.env = $$.env;
-    $4.env = $$.env;
-
-    $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
-
-    $$.err = $4.err;
-
-    $$.ident = $2.ident;
-
-    $$.pos = $2.pos;
-
-    $$.btype = $4.btype;
-  }
-  | 'char' Ident '=' Char 
+   }
+  | BasicType Ident '[' Integer ']' 
   { 
-    $$.attr = Abs.CharVarDeclaration $2.attr $4.attr;
-
-    $2.env = $$.env;
-    $4.env = $$.env;
+    $$.attr = Abs.ArrayDeclaration $1.attr $2.attr $4.attr;
 
     $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
 
@@ -230,135 +251,12 @@ Decl: 'int' Ident '=' Integer
 
     $$.pos = $2.pos;
 
-    $$.btype = $4.btype;
-  }
-  | 'string' Ident '=' String 
-  { 
-    $$.attr = Abs.StringVarDeclaration $2.attr $4.attr;
-
-    $2.env = $$.env;
-    $4.env = $$.env;
-
-    $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
-
-    $$.err = $4.err;
-
-    $$.ident = $2.ident;
-
-    $$.pos = $2.pos;
-
-    $$.btype = $4.btype; 
-  }
-  | 'bool' Ident '=' Boolean 
-  {  
-    $$.attr = Abs.BooleanVarDeclaration $2.attr $4.attr;
-
-    $2.env = $$.env;
-    $4.env = $$.env;
-
-    $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
-
-    $$.err = $4.err;
-
-    $$.ident = $2.ident;
-
-    $$.pos = $2.pos;
-
-    $$.btype = $4.btype; 
-  }
-  | 'int' Ident '[' Integer ']' 
-  { 
-    $$.attr = Abs.IntArrayDeclaration $2.attr $4.attr;
-
-    $2.env = $$.env;
-    $4.env = $$.env;
-
-    $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
-
-    $$.err = $4.err;
-
-    $$.ident = $2.ident;
-
-    $$.pos = $2.pos;
-
-    $$.btype = TS.mkArrElemTy (TS.ARRAY $4.attr (TS.Base TS.INT)) $4.btype; 
-  }
-  | 'float' Ident '[' Integer ']' 
-  { 
-    $$.attr = Abs.FloatArrayDeclaration $2.attr $4.attr;
-
-    $2.env = $$.env;
-    $4.env = $$.env;
-
-    $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
-
-    $$.err = $4.err;
-
-    $$.ident = $2.ident;
-
-    $$.pos = $2.pos;
-
-    $$.btype = TS.mkArrElemTy (TS.ARRAY $4.attr (TS.Base TS.FLOAT)) $4.btype;
-  }
-  | 'char' Ident '[' Integer ']' 
-  {
-    $$.attr = Abs.CharArrayDeclaration $2.attr $4.attr;
-
-    $2.env = $$.env;
-    $4.env = $$.env;
-
-    $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
-
-    $$.err = $4.err;
-
-    $$.ident = $2.ident;
-
-    $$.pos = $2.pos;
-
-    $$.btype = TS.mkArrElemTy (TS.ARRAY $4.attr (TS.Base TS.CHAR)) $4.btype;
-  }
-  | 'string' Ident '[' Integer ']' 
-  { 
-    $$.attr = Abs.StringArrayDeclaration $2.attr $4.attr;
-
-    $2.env = $$.env;
-    $4.env = $$.env;
-
-    $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
-
-    $$.err = $4.err;
-
-    $$.ident = $2.ident;
-
-    $$.pos = $2.pos;
-
-    $$.btype = TS.mkArrElemTy (TS.ARRAY $4.attr (TS.Base TS.STRING)) $4.btype;
-  }
-  | 'bool' Ident '[' Integer ']' 
-  {
-    $$.attr = Abs.BooleanArrayDeclaration $2.attr $4.attr;
-
-    $2.env = $$.env;
-    $4.env = $$.env;
-
-    $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
-
-    $$.err = $4.err;
-
-    $$.ident = $2.ident;
-
-    $$.pos = $2.pos;
-
-    $$.btype = TS.mkArrElemTy (TS.ARRAY $4.attr (TS.Base TS.BOOL)) $4.btype;
+    $$.btype = TS.mkArrElemTy (TS.ARRAY $4.attr $1.btype) $4.btype; 
   }
 
 Ass : Ident '=' Ident '+' Ident 
-  {  
+  { 
     $$.attr = Abs.SumAssignment $1.attr $3.attr $5.attr;
-
-    $1.env = $$.env;
-    $3.env = $$.env;
-    $5.env = $$.env;
 
     $$.modifiedEnv = E.insertVar $1.ident (posLineCol $$.pos) $$.btype $$.env;
 
@@ -369,11 +267,9 @@ Ass : Ident '=' Ident '+' Ident
     $$.pos = $1.pos;
 
     $$.btype = TS.sup (E.getVarType $3.ident $$.env) (E.getVarType $5.ident $$.env)
-    
   }
 
 {
-
 data Result = Result Abs.Program [String] deriving (Show)
 
 type Err = Either String

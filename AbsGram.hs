@@ -13,23 +13,31 @@ import qualified Data.String
 data Program = ProgramStart [Stm]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data Stm = VarDeclaration Decl | Assignment Ass
+data Stm = Declaration Decl | Assignment Ass
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data Boolean = Boolean_true | Boolean_false
+data BasicType
+    = BasicType_int
+    | BasicType_float
+    | BasicType_char
+    | BasicType_String
+    | BasicType_bool
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+data Boolean = Boolean_True | Boolean_False
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+data Value
+    = ValueInteger Integer
+    | ValueDouble Double
+    | ValueChar Char
+    | ValueString String
+    | ValueBoolean Boolean
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Decl
-    = IntVarDeclaration Ident Integer
-    | FloatVarDeclaration Ident Double
-    | CharVarDeclaration Ident Char
-    | StringVarDeclaration Ident String
-    | BooleanVarDeclaration Ident Boolean
-    | IntArrayDeclaration Ident Integer
-    | FloatArrayDeclaration Ident Integer
-    | CharArrayDeclaration Ident Integer
-    | StringArrayDeclaration Ident Integer
-    | BooleanArrayDeclaration Ident Integer
+    = VarDeclaration BasicType Ident Value
+    | ArrayDeclaration BasicType Ident Integer
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Ass = SumAssignment Ident Ident Ident
