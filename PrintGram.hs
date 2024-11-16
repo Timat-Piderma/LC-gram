@@ -153,6 +153,11 @@ instance Print AbsGram.Stm where
     AbsGram.VarDeclaration decl -> prPrec i 0 (concatD [prt 0 decl])
     AbsGram.Assignment ass -> prPrec i 0 (concatD [prt 0 ass])
 
+instance Print AbsGram.Boolean where
+  prt i = \case
+    AbsGram.Boolean_true -> prPrec i 0 (concatD [doc (showString "true")])
+    AbsGram.Boolean_false -> prPrec i 0 (concatD [doc (showString "false")])
+
 instance Print AbsGram.Decl where
   prt i = \case
     AbsGram.IntVarDeclaration id_ n -> prPrec i 0 (concatD [doc (showString "int"), prt 0 id_, doc (showString "="), prt 0 n])
@@ -160,11 +165,11 @@ instance Print AbsGram.Decl where
     AbsGram.CharVarDeclaration id_ c -> prPrec i 0 (concatD [doc (showString "char"), prt 0 id_, doc (showString "="), prt 0 c])
     AbsGram.StringVarDeclaration id_ str -> prPrec i 0 (concatD [doc (showString "string"), prt 0 id_, doc (showString "="), printString str])
     AbsGram.BooleanVarDeclaration id_ boolean -> prPrec i 0 (concatD [doc (showString "bool"), prt 0 id_, doc (showString "="), prt 0 boolean])
-
-instance Print AbsGram.Boolean where
-  prt i = \case
-    AbsGram.Boolean_true -> prPrec i 0 (concatD [doc (showString "true")])
-    AbsGram.Boolean_false -> prPrec i 0 (concatD [doc (showString "false")])
+    AbsGram.IntArrayDeclaration id_ n -> prPrec i 0 (concatD [doc (showString "int"), prt 0 id_, doc (showString "["), prt 0 n, doc (showString "]")])
+    AbsGram.FloatArrayDeclaration id_ n -> prPrec i 0 (concatD [doc (showString "float"), prt 0 id_, doc (showString "["), prt 0 n, doc (showString "]")])
+    AbsGram.CharArrayDeclaration id_ n -> prPrec i 0 (concatD [doc (showString "char"), prt 0 id_, doc (showString "["), prt 0 n, doc (showString "]")])
+    AbsGram.StringArrayDeclaration id_ n -> prPrec i 0 (concatD [doc (showString "string"), prt 0 id_, doc (showString "["), prt 0 n, doc (showString "]")])
+    AbsGram.BooleanArrayDeclaration id_ n -> prPrec i 0 (concatD [doc (showString "bool"), prt 0 id_, doc (showString "["), prt 0 n, doc (showString "]")])
 
 instance Print AbsGram.Ass where
   prt i = \case

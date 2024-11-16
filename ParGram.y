@@ -5,7 +5,17 @@
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 {-# LANGUAGE PatternSynonyms #-}
 
-module ParGram where
+module ParGram
+  ( happyError
+  , myLexer
+  , pProgram
+  , pListStm
+  , pStm
+  , pBoolean
+  , pDecl
+  , pAss
+  , Result
+  ) where
 
 import Prelude
 
@@ -19,8 +29,8 @@ import LexGram
 %name pProgram Program
 %name pListStm ListStm
 %name pStm Stm
-%name pDecl Decl
 %name pBoolean Boolean
+%name pDecl Decl
 %name pAss Ass
 -- no lexer declaration
 %monad { Err } { (>>=) } { return }
@@ -29,13 +39,15 @@ import LexGram
   '+'      { PT _ (TS _ 1)  }
   ';'      { PT _ (TS _ 2)  }
   '='      { PT _ (TS _ 3)  }
-  'bool'   { PT _ (TS _ 4)  }
-  'char'   { PT _ (TS _ 5)  }
-  'false'  { PT _ (TS _ 6)  }
-  'float'  { PT _ (TS _ 7)  }
-  'int'    { PT _ (TS _ 8)  }
-  'string' { PT _ (TS _ 9)  }
-  'true'   { PT _ (TS _ 10) }
+  '['      { PT _ (TS _ 4)  }
+  ']'      { PT _ (TS _ 5)  }
+  'bool'   { PT _ (TS _ 6)  }
+  'char'   { PT _ (TS _ 7)  }
+  'false'  { PT _ (TS _ 8)  }
+  'float'  { PT _ (TS _ 9)  }
+  'int'    { PT _ (TS _ 10) }
+  'string' { PT _ (TS _ 11) }
+  'true'   { PT _ (TS _ 12) }
   L_Ident  { PT _ (TV $$)   }
   L_charac { PT _ (TC $$)   }
   L_doubl  { PT _ (TD $$)   }
@@ -134,9 +146,7 @@ ListStm : Stm ';'
       then ["Environment already contains "++ $1.ident ++ " declared at " ++ (show (E.getVarPos $1.ident $$.env)) ++ " of type: " ++ (TS.typeToString(E.getVarType $1.ident $$.env))]
       else $1.err;
   } 
-
-
-| Stm ';' ListStm 
+  | Stm ';' ListStm 
   { 
     $$.attr = (:) $1.attr $3.attr;
 
@@ -256,6 +266,91 @@ Decl: 'int' Ident '=' Integer
 
     $$.btype = $4.btype; 
   }
+  | 'int' Ident '[' Integer ']' 
+  { 
+    $$.attr = Abs.IntArrayDeclaration $2.attr $4.attr;
+
+    $2.env = $$.env;
+    $4.env = $$.env;
+
+    $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
+
+    $$.err = $4.err;
+
+    $$.ident = $2.ident;
+
+    $$.pos = $2.pos;
+
+    $$.btype = TS.mkArrElemTy (TS.ARRAY $4.attr (TS.Base TS.INT)) $4.btype; 
+  }
+  | 'float' Ident '[' Integer ']' 
+  { 
+    $$.attr = Abs.FloatArrayDeclaration $2.attr $4.attr;
+
+    $2.env = $$.env;
+    $4.env = $$.env;
+
+    $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
+
+    $$.err = $4.err;
+
+    $$.ident = $2.ident;
+
+    $$.pos = $2.pos;
+
+    $$.btype = TS.mkArrElemTy (TS.ARRAY $4.attr (TS.Base TS.FLOAT)) $4.btype;
+  }
+  | 'char' Ident '[' Integer ']' 
+  {
+    $$.attr = Abs.CharArrayDeclaration $2.attr $4.attr;
+
+    $2.env = $$.env;
+    $4.env = $$.env;
+
+    $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
+
+    $$.err = $4.err;
+
+    $$.ident = $2.ident;
+
+    $$.pos = $2.pos;
+
+    $$.btype = TS.mkArrElemTy (TS.ARRAY $4.attr (TS.Base TS.CHAR)) $4.btype;
+  }
+  | 'string' Ident '[' Integer ']' 
+  { 
+    $$.attr = Abs.StringArrayDeclaration $2.attr $4.attr;
+
+    $2.env = $$.env;
+    $4.env = $$.env;
+
+    $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
+
+    $$.err = $4.err;
+
+    $$.ident = $2.ident;
+
+    $$.pos = $2.pos;
+
+    $$.btype = TS.mkArrElemTy (TS.ARRAY $4.attr (TS.Base TS.STRING)) $4.btype;
+  }
+  | 'bool' Ident '[' Integer ']' 
+  {
+    $$.attr = Abs.BooleanArrayDeclaration $2.attr $4.attr;
+
+    $2.env = $$.env;
+    $4.env = $$.env;
+
+    $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
+
+    $$.err = $4.err;
+
+    $$.ident = $2.ident;
+
+    $$.pos = $2.pos;
+
+    $$.btype = TS.mkArrElemTy (TS.ARRAY $4.attr (TS.Base TS.BOOL)) $4.btype;
+  }
 
 Ass : Ident '=' Ident '+' Ident 
   {  
@@ -278,6 +373,7 @@ Ass : Ident '=' Ident '+' Ident
   }
 
 {
+
 data Result = Result Abs.Program [String] deriving (Show)
 
 type Err = Either String

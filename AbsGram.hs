@@ -16,15 +16,20 @@ data Program = ProgramStart [Stm]
 data Stm = VarDeclaration Decl | Assignment Ass
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
+data Boolean = Boolean_true | Boolean_false
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
 data Decl
     = IntVarDeclaration Ident Integer
     | FloatVarDeclaration Ident Double
     | CharVarDeclaration Ident Char
     | StringVarDeclaration Ident String
     | BooleanVarDeclaration Ident Boolean
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
-
-data Boolean = Boolean_true | Boolean_false
+    | IntArrayDeclaration Ident Integer
+    | FloatArrayDeclaration Ident Integer
+    | CharArrayDeclaration Ident Integer
+    | StringArrayDeclaration Ident Integer
+    | BooleanArrayDeclaration Ident Integer
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Ass = SumAssignment Ident Ident Ident

@@ -28,6 +28,11 @@ transStm x = case x of
   AbsGram.VarDeclaration decl -> failure x
   AbsGram.Assignment ass -> failure x
 
+transBoolean :: AbsGram.Boolean -> Result
+transBoolean x = case x of
+  AbsGram.Boolean_true -> failure x
+  AbsGram.Boolean_false -> failure x
+
 transDecl :: AbsGram.Decl -> Result
 transDecl x = case x of
   AbsGram.IntVarDeclaration ident integer -> failure x
@@ -35,11 +40,11 @@ transDecl x = case x of
   AbsGram.CharVarDeclaration ident char -> failure x
   AbsGram.StringVarDeclaration ident string -> failure x
   AbsGram.BooleanVarDeclaration ident boolean -> failure x
-
-transBoolean :: AbsGram.Boolean -> Result
-transBoolean x = case x of
-  AbsGram.Boolean_true -> failure x
-  AbsGram.Boolean_false -> failure x
+  AbsGram.IntArrayDeclaration ident integer -> failure x
+  AbsGram.FloatArrayDeclaration ident integer -> failure x
+  AbsGram.CharArrayDeclaration ident integer -> failure x
+  AbsGram.StringArrayDeclaration ident integer -> failure x
+  AbsGram.BooleanArrayDeclaration ident integer -> failure x
 
 transAss :: AbsGram.Ass -> Result
 transAss x = case x of

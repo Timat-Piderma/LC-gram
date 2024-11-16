@@ -1,16 +1,21 @@
-ProgramStart.           Program ::= [Stm];
+ProgramStart.               Program ::= [Stm];
 terminator nonempty Stm ";";
 
-VarDeclaration.         Stm ::= Decl;
-Assignment.             Stm ::= Ass;
+VarDeclaration.             Stm ::= Decl;
+Assignment.                 Stm ::= Ass;
 
-IntVarDeclaration.      Decl ::= "int" Ident "=" Integer;
-FloatVarDeclaration.    Decl ::= "float" Ident "=" Double;
-CharVarDeclaration.     Decl ::= "char" Ident "=" Char;
-StringVarDeclaration.   Decl ::= "string" Ident "=" String;
-BooleanVarDeclaration.  Decl ::= "bool" Ident "=" Boolean;
+rules Boolean   ::= "true" | "false";
 
-rules          Boolean   ::= "true" | "false";
+IntVarDeclaration.          Decl ::= "int" Ident "=" Integer;
+FloatVarDeclaration.        Decl ::= "float" Ident "=" Double;
+CharVarDeclaration.         Decl ::= "char" Ident "=" Char;
+StringVarDeclaration.       Decl ::= "string" Ident "=" String;
+BooleanVarDeclaration.      Decl ::= "bool" Ident "=" Boolean;
 
+IntArrayDeclaration.        Decl ::= "int" Ident "[" Integer "]";
+FloatArrayDeclaration.      Decl ::= "float" Ident "[" Integer "]";
+CharArrayDeclaration.       Decl ::= "char" Ident "[" Integer "]";
+StringArrayDeclaration.     Decl ::= "string" Ident "[" Integer "]";
+BooleanArrayDeclaration.    Decl ::= "bool" Ident "[" Integer "]";
 
-SumAssignment.          Ass ::= Ident "=" Ident "+" Ident;
+SumAssignment.              Ass ::= Ident "=" Ident "+" Ident;
