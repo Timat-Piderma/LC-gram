@@ -43,6 +43,14 @@ $white+ ;
 $l $i*
     { tok (eitherResIdent TV) }
 
+-- String
+\" ([$u # [\" \\ \n]] | (\\ (\" | \\ | \' | n | t | r | f)))* \"
+    { tok (TL . unescapeInitTail) }
+
+-- Char
+\' ($u # [\' \\] | \\ [\\ \' n t r f]) \'
+    { tok TC }
+
 -- Integer
 $d+
     { tok TI }
@@ -152,7 +160,9 @@ eitherResIdent tv s = treeFind resWords
 -- | The keywords and symbols of the language organized as binary search tree.
 resWords :: BTree
 resWords =
-  b "=" 3 (b ";" 2 (b "+" 1 N N) N) (b "int" 5 (b "float" 4 N N) N)
+  b "false" 6
+    (b "=" 3 (b ";" 2 (b "+" 1 N N) N) (b "char" 5 (b "bool" 4 N N) N))
+    (b "string" 9 (b "int" 8 (b "float" 7 N N) N) (b "true" 10 N N))
   where
   b s n = B bs (TS bs n)
     where

@@ -32,6 +32,14 @@ transDecl :: AbsGram.Decl -> Result
 transDecl x = case x of
   AbsGram.IntVarDeclaration ident integer -> failure x
   AbsGram.FloatVarDeclaration ident double -> failure x
+  AbsGram.CharVarDeclaration ident char -> failure x
+  AbsGram.StringVarDeclaration ident string -> failure x
+  AbsGram.BooleanVarDeclaration ident boolean -> failure x
+
+transBoolean :: AbsGram.Boolean -> Result
+transBoolean x = case x of
+  AbsGram.Boolean_true -> failure x
+  AbsGram.Boolean_false -> failure x
 
 transAss :: AbsGram.Ass -> Result
 transAss x = case x of

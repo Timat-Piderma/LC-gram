@@ -6,5 +6,11 @@ Assignment.             Stm ::= Ass;
 
 IntVarDeclaration.      Decl ::= "int" Ident "=" Integer;
 FloatVarDeclaration.    Decl ::= "float" Ident "=" Double;
+CharVarDeclaration.     Decl ::= "char" Ident "=" Char;
+StringVarDeclaration.   Decl ::= "string" Ident "=" String;
+BooleanVarDeclaration.  Decl ::= "bool" Ident "=" Boolean;
+
+rules          Boolean   ::= "true" | "false";
+
 
 SumAssignment.          Ass ::= Ident "=" Ident "+" Ident;
