@@ -13,9 +13,6 @@ import qualified Data.String
 data Program = ProgramStart [Stm]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data Stm = Declaration Decl | Assignment Ass
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
-
 data BasicType
     = BasicType_int
     | BasicType_float
@@ -27,20 +24,23 @@ data BasicType
 data Boolean = Boolean_True | Boolean_False
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data Value
-    = ValueInteger Integer
-    | ValueDouble Double
-    | ValueChar Char
-    | ValueString String
-    | ValueBoolean Boolean
+data Stm = Declaration Decl | Assignment Ident RExp
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Decl
-    = VarDeclaration BasicType Ident Value
+    = VarDeclaration BasicType Ident RExp
     | ArrayDeclaration BasicType Ident Integer
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data Ass = SumAssignment Ident Ident Ident
+data RExp
+    = Add RExp RExp
+    | Sub RExp RExp
+    | IntValue Integer
+    | FloatValue Double
+    | StringValue String
+    | CharValue Char
+    | BooleanValue Boolean
+    | VarValue Ident
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 newtype Ident = Ident String

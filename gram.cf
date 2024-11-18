@@ -1,16 +1,26 @@
 ProgramStart.               Program ::= [Stm];
 terminator nonempty Stm ";";
 
-Declaration.             Stm ::= Decl;
-Assignment.                 Stm ::= Ass;
-
 rules BasicType ::= "int" | "float" | "char" | "String" | "bool";
 rules Boolean ::= "True" | "False";
 
-rules Value ::= Integer | Double | Char | String | Boolean;
+Declaration.                Stm ::= Decl;
 
-VarDeclaration.          Decl ::= BasicType Ident "=" Value;
+VarDeclaration.             Decl ::= BasicType Ident "=" RExp;
+ArrayDeclaration.           Decl ::= BasicType Ident "[" Integer "]";
 
-ArrayDeclaration.        Decl ::= BasicType Ident "[" Integer "]";
 
-SumAssignment.          Ass ::= Ident "=" Ident "+" Ident;
+Assignment.                 Stm ::= Ident "=" RExp;
+
+
+Add.                        RExp ::= RExp "+" RExp2;
+Sub.                        RExp ::= RExp "-" RExp2;
+
+IntValue.                   RExp2 ::= Integer;
+FloatValue.                 RExp2 ::= Double;
+StringValue.                RExp2 ::= String;
+CharValue.                  RExp2 ::= Char;
+BooleanValue.               RExp2 ::= Boolean;
+VarValue.                   RExp2 ::= Ident;
+
+coercions RExp 2;

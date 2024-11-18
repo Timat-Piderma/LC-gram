@@ -148,11 +148,6 @@ instance Print [AbsGram.Stm] where
   prt _ [x] = concatD [prt 0 x, doc (showString ";")]
   prt _ (x:xs) = concatD [prt 0 x, doc (showString ";"), prt 0 xs]
 
-instance Print AbsGram.Stm where
-  prt i = \case
-    AbsGram.Declaration decl -> prPrec i 0 (concatD [prt 0 decl])
-    AbsGram.Assignment ass -> prPrec i 0 (concatD [prt 0 ass])
-
 instance Print AbsGram.BasicType where
   prt i = \case
     AbsGram.BasicType_int -> prPrec i 0 (concatD [doc (showString "int")])
@@ -166,19 +161,23 @@ instance Print AbsGram.Boolean where
     AbsGram.Boolean_True -> prPrec i 0 (concatD [doc (showString "True")])
     AbsGram.Boolean_False -> prPrec i 0 (concatD [doc (showString "False")])
 
-instance Print AbsGram.Value where
+instance Print AbsGram.Stm where
   prt i = \case
-    AbsGram.ValueInteger n -> prPrec i 0 (concatD [prt 0 n])
-    AbsGram.ValueDouble d -> prPrec i 0 (concatD [prt 0 d])
-    AbsGram.ValueChar c -> prPrec i 0 (concatD [prt 0 c])
-    AbsGram.ValueString str -> prPrec i 0 (concatD [printString str])
-    AbsGram.ValueBoolean boolean -> prPrec i 0 (concatD [prt 0 boolean])
+    AbsGram.Declaration decl -> prPrec i 0 (concatD [prt 0 decl])
+    AbsGram.Assignment id_ rexp -> prPrec i 0 (concatD [prt 0 id_, doc (showString "="), prt 0 rexp])
 
 instance Print AbsGram.Decl where
   prt i = \case
-    AbsGram.VarDeclaration basictype id_ value -> prPrec i 0 (concatD [prt 0 basictype, prt 0 id_, doc (showString "="), prt 0 value])
+    AbsGram.VarDeclaration basictype id_ rexp -> prPrec i 0 (concatD [prt 0 basictype, prt 0 id_, doc (showString "="), prt 0 rexp])
     AbsGram.ArrayDeclaration basictype id_ n -> prPrec i 0 (concatD [prt 0 basictype, prt 0 id_, doc (showString "["), prt 0 n, doc (showString "]")])
 
-instance Print AbsGram.Ass where
+instance Print AbsGram.RExp where
   prt i = \case
-    AbsGram.SumAssignment id_1 id_2 id_3 -> prPrec i 0 (concatD [prt 0 id_1, doc (showString "="), prt 0 id_2, doc (showString "+"), prt 0 id_3])
+    AbsGram.Add rexp1 rexp2 -> prPrec i 0 (concatD [prt 0 rexp1, doc (showString "+"), prt 2 rexp2])
+    AbsGram.Sub rexp1 rexp2 -> prPrec i 0 (concatD [prt 0 rexp1, doc (showString "-"), prt 2 rexp2])
+    AbsGram.IntValue n -> prPrec i 2 (concatD [prt 0 n])
+    AbsGram.FloatValue d -> prPrec i 2 (concatD [prt 0 d])
+    AbsGram.StringValue str -> prPrec i 2 (concatD [printString str])
+    AbsGram.CharValue c -> prPrec i 2 (concatD [prt 0 c])
+    AbsGram.BooleanValue boolean -> prPrec i 2 (concatD [prt 0 boolean])
+    AbsGram.VarValue id_ -> prPrec i 2 (concatD [prt 0 id_])
