@@ -12,15 +12,28 @@ ArrayDeclaration.           Decl ::= BasicType Ident "[" Integer "]";
 
 Assignment.                 Stm ::= Ident "=" RExp;
 
+Or.                         RExp ::= RExp "||" RExp2;
+And.                        RExp ::= RExp "&&" RExp2;
+Not.                        RExp ::= "!" RExp2;
 
-Add.                        RExp ::= RExp "+" RExp2;
-Sub.                        RExp ::= RExp "-" RExp2;
+Eq.                         RExp2 ::= RExp2 "==" RExp3;
+Neq.                        RExp2 ::= RExp2 "!=" RExp3;
+Lt.                         RExp2 ::= RExp2 "<" RExp3;
+Gt.                         RExp2 ::= RExp2 ">" RExp3;
+Le.                         RExp2 ::= RExp2 "<=" RExp3;
+Ge.                         RExp2 ::= RExp2 ">=" RExp3;
 
-IntValue.                   RExp2 ::= Integer;
-FloatValue.                 RExp2 ::= Double;
-StringValue.                RExp2 ::= String;
-CharValue.                  RExp2 ::= Char;
-BooleanValue.               RExp2 ::= Boolean;
-VarValue.                   RExp2 ::= Ident;
+Add.                        RExp3 ::= RExp3 "+" RExp4;
+Sub.                        RExp3 ::= RExp3 "-" RExp4;
+Mul.                        RExp3 ::= RExp3 "*" RExp4;
+Div.                        RExp3 ::= RExp3 "/" RExp4;
+Mod.                        RExp3 ::= RExp3 "%" RExp4;
 
-coercions RExp 2;
+IntValue.                   RExp4 ::= Integer;
+FloatValue.                 RExp4 ::= Double;
+StringValue.                RExp4 ::= String;
+CharValue.                  RExp4 ::= Char;
+BooleanValue.               RExp4 ::= Boolean;
+VarValue.                   RExp4 ::= Ident;
+
+coercions RExp 4;

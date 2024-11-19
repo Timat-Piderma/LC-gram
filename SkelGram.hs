@@ -48,8 +48,20 @@ transDecl x = case x of
 
 transRExp :: AbsGram.RExp -> Result
 transRExp x = case x of
+  AbsGram.Or rexp1 rexp2 -> failure x
+  AbsGram.And rexp1 rexp2 -> failure x
+  AbsGram.Not rexp -> failure x
+  AbsGram.Eq rexp1 rexp2 -> failure x
+  AbsGram.Neq rexp1 rexp2 -> failure x
+  AbsGram.Lt rexp1 rexp2 -> failure x
+  AbsGram.Gt rexp1 rexp2 -> failure x
+  AbsGram.Le rexp1 rexp2 -> failure x
+  AbsGram.Ge rexp1 rexp2 -> failure x
   AbsGram.Add rexp1 rexp2 -> failure x
   AbsGram.Sub rexp1 rexp2 -> failure x
+  AbsGram.Mul rexp1 rexp2 -> failure x
+  AbsGram.Div rexp1 rexp2 -> failure x
+  AbsGram.Mod rexp1 rexp2 -> failure x
   AbsGram.IntValue integer -> failure x
   AbsGram.FloatValue double -> failure x
   AbsGram.StringValue string -> failure x

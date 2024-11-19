@@ -33,8 +33,20 @@ data Decl
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data RExp
-    = Add RExp RExp
+    = Or RExp RExp
+    | And RExp RExp
+    | Not RExp
+    | Eq RExp RExp
+    | Neq RExp RExp
+    | Lt RExp RExp
+    | Gt RExp RExp
+    | Le RExp RExp
+    | Ge RExp RExp
+    | Add RExp RExp
     | Sub RExp RExp
+    | Mul RExp RExp
+    | Div RExp RExp
+    | Mod RExp RExp
     | IntValue Integer
     | FloatValue Double
     | StringValue String

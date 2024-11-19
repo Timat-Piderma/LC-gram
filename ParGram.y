@@ -24,26 +24,40 @@ import LexGram
 %name pDecl Decl
 %name pRExp RExp
 %name pRExp2 RExp2
+%name pRExp3 RExp3
+%name pRExp4 RExp4
 %name pRExp1 RExp1
 -- no lexer declaration
 %monad { Err } { (>>=) } { return }
 %tokentype {Token}
 %token
-  '('      { PT _ (TS _ 1)  }
-  ')'      { PT _ (TS _ 2)  }
-  '+'      { PT _ (TS _ 3)  }
-  '-'      { PT _ (TS _ 4)  }
-  ';'      { PT _ (TS _ 5)  }
-  '='      { PT _ (TS _ 6)  }
-  'False'  { PT _ (TS _ 7)  }
-  'String' { PT _ (TS _ 8)  }
-  'True'   { PT _ (TS _ 9)  }
-  '['      { PT _ (TS _ 10) }
-  ']'      { PT _ (TS _ 11) }
-  'bool'   { PT _ (TS _ 12) }
-  'char'   { PT _ (TS _ 13) }
-  'float'  { PT _ (TS _ 14) }
-  'int'    { PT _ (TS _ 15) }
+  '!'      { PT _ (TS _ 1)  }
+  '!='     { PT _ (TS _ 2)  }
+  '%'      { PT _ (TS _ 3)  }
+  '&&'     { PT _ (TS _ 4)  }
+  '('      { PT _ (TS _ 5)  }
+  ')'      { PT _ (TS _ 6)  }
+  '*'      { PT _ (TS _ 7)  }
+  '+'      { PT _ (TS _ 8)  }
+  '-'      { PT _ (TS _ 9)  }
+  '/'      { PT _ (TS _ 10) }
+  ';'      { PT _ (TS _ 11) }
+  '<'      { PT _ (TS _ 12) }
+  '<='     { PT _ (TS _ 13) }
+  '='      { PT _ (TS _ 14) }
+  '=='     { PT _ (TS _ 15) }
+  '>'      { PT _ (TS _ 16) }
+  '>='     { PT _ (TS _ 17) }
+  'False'  { PT _ (TS _ 18) }
+  'String' { PT _ (TS _ 19) }
+  'True'   { PT _ (TS _ 20) }
+  '['      { PT _ (TS _ 21) }
+  ']'      { PT _ (TS _ 22) }
+  'bool'   { PT _ (TS _ 23) }
+  'char'   { PT _ (TS _ 24) }
+  'float'  { PT _ (TS _ 25) }
+  'int'    { PT _ (TS _ 26) }
+  '||'     { PT _ (TS _ 27) }
   L_Ident  { PT _ (TV $$)   }
   L_charac { PT _ (TC $$)   }
   L_doubl  { PT _ (TD $$)   }
@@ -111,31 +125,7 @@ Boolean: 'True'
     $$.btype = (TS.Base TS.BOOL);
   }
 
-Program : ListStm 
-  { 
-    $$.res = Result (Abs.ProgramStart $1.attr) $1.err;
-    $1.env = E.emptyEnv;
-  }
-
-ListStm : Stm ';' 
-  { 
-    $$.attr = (:[]) $1.attr;
-    $1.env = $$.env;
-    $$.err = if E.containsVar $1.ident $$.env
-      then ["Environment already contains "++ $1.ident ++ " declared at " ++ (show (E.getVarPos $1.ident $$.env)) ++ " of type: " ++ (TS.typeToString(E.getVarType $1.ident $$.env))]
-      else $1.err;
-  } 
-  | Stm ';' ListStm 
-  { 
-    $$.attr = (:) $1.attr $3.attr;
-    $1.env = $$.env;
-    $3.env = $1.modifiedEnv;
-    $$.err = if E.containsVar $1.ident $$.env
-      then ["Environment already contains " ++ $1.ident ++ " declared at " ++ (show (E.getVarPos $1.ident $$.env)) ++ " of type: " ++ (TS.typeToString(E.getVarType $1.ident $$.env)) ] ++ $3.err
-      else $1.err ++ $3.err;
-  }
-
-BasicType: 'int' 
+  BasicType: 'int' 
   { 
     $$.attr = Abs.BasicType_int;
     $$.btype = TS.Base TS.INT;
@@ -159,6 +149,30 @@ BasicType: 'int'
   { 
     $$.attr = Abs.BasicType_bool;
     $$.btype = TS.Base TS.BOOL;
+  }
+
+Program : ListStm 
+  { 
+    $$.res = Result (Abs.ProgramStart $1.attr) $1.err;
+    $1.env = E.emptyEnv;
+  }
+
+ListStm : Stm ';' 
+  { 
+    $$.attr = (:[]) $1.attr;
+    $1.env = $$.env;
+    $$.err = if E.containsVar $1.ident $$.env
+      then ["Environment already contains "++ $1.ident ++ " declared at " ++ (show (E.getVarPos $1.ident $$.env)) ++ " of type: " ++ (TS.typeToString(E.getVarType $1.ident $$.env))]
+      else $1.err;
+  } 
+  | Stm ';' ListStm 
+  { 
+    $$.attr = (:) $1.attr $3.attr;
+    $1.env = $$.env;
+    $3.env = $1.modifiedEnv;
+    $$.err = if E.containsVar $1.ident $$.env
+      then ["Environment already contains " ++ $1.ident ++ " declared at " ++ (show (E.getVarPos $1.ident $$.env)) ++ " of type: " ++ (TS.typeToString(E.getVarType $1.ident $$.env)) ] ++ $3.err
+      else $1.err ++ $3.err;
   }
 
 Stm: Decl
@@ -201,21 +215,28 @@ Decl: BasicType Ident '=' RExp
     $$.btype = TS.mkArrElemTy (TS.ARRAY $4.attr $1.btype) $4.btype; 
   }
 
-RExp: RExp '+' RExp2 
-  { 
-    $$.attr = Abs.Add $1.attr $3.attr;
+RExp: RExp '||' RExp2 
+  {
+    $$.attr = Abs.Or $1.attr $3.attr;
     $$.err = $1.err ++ $3.err;
-    $$.btype = TS.sup $1.btype $3.btype;
+    $$.btype = $3.btype; 
+    $1.env = $$.env;  
+    $3.env = $$.env;
+  }
+  | RExp '&&' RExp2 
+  {
+    $$.attr = Abs.And $1.attr $3.attr;
+    $$.err = $1.err ++ $3.err;
+    $$.btype = $3.btype; 
     $1.env = $$.env;
     $3.env = $$.env;
   }
-  | RExp '-' RExp2 
+  | '!' RExp2 
   { 
-    $$.attr = Abs.Sub $1.attr $3.attr;
-    $$.err = $1.err ++ $3.err;
-    $$.btype = TS.sup $1.btype $3.btype;
-    $1.env = $$.env;
-    $3.env = $$.env;
+    $$.attr = Abs.Not $2.attr;
+    $$.err = $2.err;
+    $$.btype = $2.btype; 
+    $2.env = $$.env;
   }
   | RExp1 
   { 
@@ -225,7 +246,112 @@ RExp: RExp '+' RExp2
     $1.env = $$.env;
   }
 
-RExp2: Integer 
+RExp2
+  : RExp2 '==' RExp3 
+  { 
+    $$.attr = Abs.Eq $1.attr $3.attr;
+    $$.err = $1.err ++ $3.err;
+    $$.btype = TS.sup $1.btype $3.btype; 
+    $1.env = $$.env;
+    $3.env = $$.env;
+  }
+  | RExp2 '!=' RExp3 
+  { 
+    $$.attr = Abs.Neq $1.attr $3.attr;
+    $$.err = $1.err ++ $3.err;
+    $$.btype = TS.sup $1.btype $3.btype; 
+    $1.env = $$.env;
+    $3.env = $$.env;
+  }
+  | RExp2 '<' RExp3 
+  { 
+    $$.attr = Abs.Lt $1.attr $3.attr;
+    $$.err = $1.err ++ $3.err;
+    $$.btype = TS.sup $1.btype $3.btype; 
+    $1.env = $$.env;
+    $3.env = $$.env;
+  }
+  | RExp2 '>' RExp3 
+  { 
+    $$.attr = Abs.Gt $1.attr $3.attr;
+    $$.err = $1.err ++ $3.err;
+    $$.btype = TS.sup $1.btype $3.btype; 
+    $1.env = $$.env;
+    $3.env = $$.env;
+  }
+  | RExp2 '<=' RExp3 
+  { 
+    $$.attr = Abs.Le $1.attr $3.attr;
+    $$.err = $1.err ++ $3.err;
+    $$.btype = TS.sup $1.btype $3.btype; 
+    $1.env = $$.env;
+    $3.env = $$.env;
+  }
+  | RExp2 '>=' RExp3 
+  { 
+    $$.attr = Abs.Ge $1.attr $3.attr;
+    $$.err = $1.err ++ $3.err;
+    $$.btype = TS.sup $1.btype $3.btype; 
+    $1.env = $$.env;
+    $3.env = $$.env;
+  }
+  | RExp3 
+  {
+    $$.attr = $1.attr; 
+    $$.err = $1.err;
+    $$.btype = $1.btype;
+    $1.env = $$.env;
+  }
+
+RExp3: RExp3 '+' RExp4 
+  { 
+    $$.attr = Abs.Add $1.attr $3.attr;
+    $$.err = $1.err ++ $3.err;
+    $$.btype = TS.sup $1.btype $3.btype;
+    $1.env = $$.env;
+    $3.env = $$.env;
+  }
+  | RExp3 '-' RExp4 
+  { 
+    $$.attr = Abs.Sub $1.attr $3.attr;
+    $$.err = $1.err ++ $3.err;
+    $$.btype = TS.sup $1.btype $3.btype;
+    $1.env = $$.env;
+    $3.env = $$.env;
+  }
+  | RExp3 '*' RExp4 
+  { 
+    $$.attr = Abs.Mul $1.attr $3.attr;
+    $$.err = $1.err ++ $3.err;
+    $$.btype = TS.sup $1.btype $3.btype;
+    $1.env = $$.env;
+    $3.env = $$.env;
+  }
+  | RExp3 '/' RExp4 
+  { 
+    $$.attr = Abs.Div $1.attr $3.attr;
+    $$.err = $1.err ++ $3.err;
+    $$.btype = TS.sup $1.btype $3.btype;
+    $1.env = $$.env;
+    $3.env = $$.env;
+  }
+  | RExp3 '%' RExp4 
+  { 
+    $$.attr = Abs.Mod $1.attr $3.attr;
+    $$.err = $1.err ++ $3.err;
+    $$.btype = TS.sup $1.btype $3.btype;
+    $1.env = $$.env;
+    $3.env = $$.env;
+  }
+  | RExp4 
+  {     
+    $$.attr = $1.attr; 
+    $$.err = $1.err;
+    $$.btype = $1.btype;
+    $1.env = $$.env;
+  }
+
+RExp4: Integer 
   { 
     $$.attr = Abs.IntValue $1.attr; 
     $$.err = $1.err;
@@ -270,15 +396,14 @@ RExp2: Integer
   }
 
 RExp1 : RExp2 
-  { 
+{
     $$.attr = $1.attr;
     $$.err = $1.err;
     $$.btype = $1.btype;
     $1.env = $$.env;
-  }
+}
 
 {
-
 data Result = Result Abs.Program [String] deriving (Show)
 
 type Err = Either String
