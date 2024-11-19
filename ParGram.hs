@@ -333,7 +333,7 @@ happyReduction_24 happy_x_2
 	happy_x_1
 	 =  case happyOut23 happy_x_1 of { happy_var_1 -> 
 	happyIn22
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ err = if E.containsVar (ident happySubAttrs_1) (env happySelfAttrs) then ["Environment already contains "++ (ident happySubAttrs_1) ++ " declared at " ++ (show (E.getVarPos (ident happySubAttrs_1) (env happySelfAttrs) )) ++ " of type: " ++ (TS.typeToString(E.getVarType (ident happySubAttrs_1) (env happySelfAttrs) ))] else (err happySubAttrs_1) , attr = (:[]) (attr happySubAttrs_1)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ err = (err happySubAttrs_1) , attr = (:[]) (attr happySubAttrs_1)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 } in (happyConditions,happySelfAttrs)
 	)}
 
 #if __GLASGOW_HASKELL__ >= 710
@@ -345,7 +345,7 @@ happyReduction_25 happy_x_3
 	 =  case happyOut23 happy_x_1 of { happy_var_1 -> 
 	case happyOut22 happy_x_3 of { happy_var_3 -> 
 	happyIn22
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ err = if E.containsVar (ident happySubAttrs_1) (env happySelfAttrs) then ["Environment already contains " ++ (ident happySubAttrs_1) ++ " declared at " ++ (show (E.getVarPos (ident happySubAttrs_1) (env happySelfAttrs) )) ++ " of type: " ++ (TS.typeToString(E.getVarType (ident happySubAttrs_1) (env happySelfAttrs) )) ] ++ (err happySubAttrs_3) else (err happySubAttrs_1) ++ (err happySubAttrs_3) , attr = (:) (attr happySubAttrs_1) (attr happySubAttrs_3)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = (modifiedEnv happySubAttrs_1)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_3 } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ err = (err happySubAttrs_1) ++ (err happySubAttrs_3) , attr = (:) (attr happySubAttrs_1) (attr happySubAttrs_3)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = (modifiedEnv happySubAttrs_1)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_3 } in (happyConditions,happySelfAttrs)
 	)}}
 
 #if __GLASGOW_HASKELL__ >= 710
@@ -354,7 +354,7 @@ happyReduce_26 = happySpecReduce_1  9# happyReduction_26
 happyReduction_26 happy_x_1
 	 =  case happyOut24 happy_x_1 of { happy_var_1 -> 
 	happyIn23
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = (btype happySubAttrs_1) , ident = (ident happySubAttrs_1) , err = (err happySubAttrs_1) , modifiedEnv = (modifiedEnv happySubAttrs_1) , attr = Abs.Declaration (attr happySubAttrs_1)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = (btype happySubAttrs_1) , ident = (ident happySubAttrs_1) , err = if E.containsVar (ident happySubAttrs_1) (env happySelfAttrs) then ["Environment already contains " ++ (ident happySubAttrs_1) ++ " declared at " ++ (show (E.getVarPos (ident happySubAttrs_1) (env happySelfAttrs) )) ++ " of type: " ++ (TS.typeToString(E.getVarType (ident happySubAttrs_1) (env happySelfAttrs) )) ] ++ (err happySubAttrs_1) else (err happySubAttrs_1) , modifiedEnv = (modifiedEnv happySubAttrs_1) , attr = Abs.Declaration (attr happySubAttrs_1)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 } in (happyConditions,happySelfAttrs)
 	)}
 
 #if __GLASGOW_HASKELL__ >= 710

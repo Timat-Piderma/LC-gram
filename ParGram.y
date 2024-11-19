@@ -161,18 +161,14 @@ ListStm : Stm ';'
   { 
     $$.attr = (:[]) $1.attr;
     $1.env = $$.env;
-    $$.err = if E.containsVar $1.ident $$.env
-      then ["Environment already contains "++ $1.ident ++ " declared at " ++ (show (E.getVarPos $1.ident $$.env)) ++ " of type: " ++ (TS.typeToString(E.getVarType $1.ident $$.env))]
-      else $1.err;
+    $$.err = $1.err;
   } 
   | Stm ';' ListStm 
   { 
     $$.attr = (:) $1.attr $3.attr;
     $1.env = $$.env;
     $3.env = $1.modifiedEnv;
-    $$.err = if E.containsVar $1.ident $$.env
-      then ["Environment already contains " ++ $1.ident ++ " declared at " ++ (show (E.getVarPos $1.ident $$.env)) ++ " of type: " ++ (TS.typeToString(E.getVarType $1.ident $$.env)) ] ++ $3.err
-      else $1.err ++ $3.err;
+    $$.err = $1.err ++ $3.err;
   }
 
 Stm: Decl
@@ -180,7 +176,9 @@ Stm: Decl
     $$.attr = Abs.Declaration $1.attr;
     $1.env = $$.env; 
     $$.modifiedEnv = $1.modifiedEnv;
-    $$.err = $1.err;
+    $$.err = if E.containsVar $1.ident $$.env
+      then ["Environment already contains " ++ $1.ident ++ " declared at " ++ (show (E.getVarPos $1.ident $$.env)) ++ " of type: " ++ (TS.typeToString(E.getVarType $1.ident $$.env)) ] ++ $1.err
+      else $1.err;
     $$.ident = $1.ident;
     $$.btype = $1.btype;
   }
