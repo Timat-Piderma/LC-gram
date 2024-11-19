@@ -18,8 +18,8 @@ all : TestGram
 
 # Rules for building the parser.
 
-AbsGram.hs LexGram.x ParGram.y PrintGram.hs TestGram.hs : gram.cf
-	bnfc --haskell gram.cf
+#AbsGram.hs LexGram.x ParGram.y PrintGram.hs TestGram.hs : gram.cf
+#	bnfc --haskell gram.cf
 
 %.hs : %.y
 	${HAPPY} ${HAPPY_OPTS} $<
