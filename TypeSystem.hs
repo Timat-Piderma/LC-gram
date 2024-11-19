@@ -23,8 +23,6 @@ sup (Base CHAR) (Base STRING)     = Base STRING
 sup (Base INT) (Base CHAR)        = Base INT
 sup (Base CHAR) (Base INT)        = Base INT
 
-
-
 sup _ _                           = Base ERROR
 
 typeToString :: Type -> String
@@ -44,10 +42,10 @@ mathtype CHAR       = INT
 mathtype _          = ERROR
 
 -- Type of relational operators
-rel :: BasicType -> BasicType -> BasicType
-rel x y = case sup (Base x) (Base y) of
-  Base ERROR              -> ERROR
-  _                         -> BOOL
+rel :: Type -> Type -> Type
+rel x y = case sup x y of
+  Base ERROR              -> Base ERROR
+  _                         -> Base BOOL
 
 -- Given an array type and index type, returns the type of the array element if t2 is an appropriate index (INT)
 mkArrElemTy :: Type -> Type -> Type
@@ -55,3 +53,8 @@ mkArrElemTy (ARRAY _ t1) t2 = case sup t2 (Base INT) of
   Base INT -> t1
   _   -> Base ERROR
 mkArrElemTy _ _ = Base ERROR
+
+-- Checks if a value is boolean
+isBoolean :: Type -> Type
+isBoolean (Base BOOL) = Base BOOL
+isBoolean _ = Base ERROR

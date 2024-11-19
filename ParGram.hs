@@ -409,7 +409,7 @@ happyReduction_30 happy_x_3
 	 =  case happyOut25 happy_x_1 of { happy_var_1 -> 
 	case happyOut26 happy_x_3 of { happy_var_3 -> 
 	happyIn25
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = (btype happySubAttrs_3) , err = (err happySubAttrs_1) ++ (err happySubAttrs_3) , attr = Abs.Or (attr happySubAttrs_1) (attr happySubAttrs_3)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_3 } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = TS.isBoolean (TS.sup (btype happySubAttrs_1) (btype happySubAttrs_3) ) , err = (err happySubAttrs_1) ++ (err happySubAttrs_3) , attr = Abs.Or (attr happySubAttrs_1) (attr happySubAttrs_3)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_3 } in (happyConditions,happySelfAttrs)
 	)}}
 
 #if __GLASGOW_HASKELL__ >= 710
@@ -421,7 +421,7 @@ happyReduction_31 happy_x_3
 	 =  case happyOut25 happy_x_1 of { happy_var_1 -> 
 	case happyOut26 happy_x_3 of { happy_var_3 -> 
 	happyIn25
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = (btype happySubAttrs_3) , err = (err happySubAttrs_1) ++ (err happySubAttrs_3) , attr = Abs.And (attr happySubAttrs_1) (attr happySubAttrs_3)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_3 } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = TS.isBoolean (TS.sup (btype happySubAttrs_1) (btype happySubAttrs_3) ) , err = (err happySubAttrs_1) ++ (err happySubAttrs_3) , attr = Abs.And (attr happySubAttrs_1) (attr happySubAttrs_3)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_3 } in (happyConditions,happySelfAttrs)
 	)}}
 
 #if __GLASGOW_HASKELL__ >= 710
@@ -431,7 +431,7 @@ happyReduction_32 happy_x_2
 	happy_x_1
 	 =  case happyOut26 happy_x_2 of { happy_var_2 -> 
 	happyIn25
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = (btype happySubAttrs_2) , err = (err happySubAttrs_2) , attr = Abs.Not (attr happySubAttrs_2)  }; (happyConditions_2,happySubAttrs_2) = happy_var_2 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_2 } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = TS.isBoolean (btype happySubAttrs_2) , err = (err happySubAttrs_2) , attr = Abs.Not (attr happySubAttrs_2)  }; (happyConditions_2,happySubAttrs_2) = happy_var_2 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_2 } in (happyConditions,happySelfAttrs)
 	)}
 
 #if __GLASGOW_HASKELL__ >= 710
@@ -452,7 +452,7 @@ happyReduction_34 happy_x_3
 	 =  case happyOut26 happy_x_1 of { happy_var_1 -> 
 	case happyOut27 happy_x_3 of { happy_var_3 -> 
 	happyIn26
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = TS.sup (btype happySubAttrs_1) (btype happySubAttrs_3) , err = (err happySubAttrs_1) ++ (err happySubAttrs_3) , attr = Abs.Eq (attr happySubAttrs_1) (attr happySubAttrs_3)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_3 } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = TS.rel (btype happySubAttrs_1) (btype happySubAttrs_3) , err = (err happySubAttrs_1) ++ (err happySubAttrs_3) , attr = Abs.Eq (attr happySubAttrs_1) (attr happySubAttrs_3)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_3 } in (happyConditions,happySelfAttrs)
 	)}}
 
 #if __GLASGOW_HASKELL__ >= 710
@@ -464,7 +464,7 @@ happyReduction_35 happy_x_3
 	 =  case happyOut26 happy_x_1 of { happy_var_1 -> 
 	case happyOut27 happy_x_3 of { happy_var_3 -> 
 	happyIn26
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = TS.sup (btype happySubAttrs_1) (btype happySubAttrs_3) , err = (err happySubAttrs_1) ++ (err happySubAttrs_3) , attr = Abs.Neq (attr happySubAttrs_1) (attr happySubAttrs_3)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_3 } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = TS.rel (btype happySubAttrs_1) (btype happySubAttrs_3) , err = (err happySubAttrs_1) ++ (err happySubAttrs_3) , attr = Abs.Neq (attr happySubAttrs_1) (attr happySubAttrs_3)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_3 } in (happyConditions,happySelfAttrs)
 	)}}
 
 #if __GLASGOW_HASKELL__ >= 710
@@ -476,7 +476,7 @@ happyReduction_36 happy_x_3
 	 =  case happyOut26 happy_x_1 of { happy_var_1 -> 
 	case happyOut27 happy_x_3 of { happy_var_3 -> 
 	happyIn26
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = TS.sup (btype happySubAttrs_1) (btype happySubAttrs_3) , err = (err happySubAttrs_1) ++ (err happySubAttrs_3) , attr = Abs.Lt (attr happySubAttrs_1) (attr happySubAttrs_3)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_3 } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = TS.rel (btype happySubAttrs_1) (btype happySubAttrs_3) , err = (err happySubAttrs_1) ++ (err happySubAttrs_3) , attr = Abs.Lt (attr happySubAttrs_1) (attr happySubAttrs_3)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_3 } in (happyConditions,happySelfAttrs)
 	)}}
 
 #if __GLASGOW_HASKELL__ >= 710
@@ -488,7 +488,7 @@ happyReduction_37 happy_x_3
 	 =  case happyOut26 happy_x_1 of { happy_var_1 -> 
 	case happyOut27 happy_x_3 of { happy_var_3 -> 
 	happyIn26
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = TS.sup (btype happySubAttrs_1) (btype happySubAttrs_3) , err = (err happySubAttrs_1) ++ (err happySubAttrs_3) , attr = Abs.Gt (attr happySubAttrs_1) (attr happySubAttrs_3)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_3 } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = TS.rel (btype happySubAttrs_1) (btype happySubAttrs_3) , err = (err happySubAttrs_1) ++ (err happySubAttrs_3) , attr = Abs.Gt (attr happySubAttrs_1) (attr happySubAttrs_3)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_3 } in (happyConditions,happySelfAttrs)
 	)}}
 
 #if __GLASGOW_HASKELL__ >= 710
@@ -500,7 +500,7 @@ happyReduction_38 happy_x_3
 	 =  case happyOut26 happy_x_1 of { happy_var_1 -> 
 	case happyOut27 happy_x_3 of { happy_var_3 -> 
 	happyIn26
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = TS.sup (btype happySubAttrs_1) (btype happySubAttrs_3) , err = (err happySubAttrs_1) ++ (err happySubAttrs_3) , attr = Abs.Le (attr happySubAttrs_1) (attr happySubAttrs_3)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_3 } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = TS.rel (btype happySubAttrs_1) (btype happySubAttrs_3) , err = (err happySubAttrs_1) ++ (err happySubAttrs_3) , attr = Abs.Le (attr happySubAttrs_1) (attr happySubAttrs_3)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_3 } in (happyConditions,happySelfAttrs)
 	)}}
 
 #if __GLASGOW_HASKELL__ >= 710
@@ -512,7 +512,7 @@ happyReduction_39 happy_x_3
 	 =  case happyOut26 happy_x_1 of { happy_var_1 -> 
 	case happyOut27 happy_x_3 of { happy_var_3 -> 
 	happyIn26
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = TS.sup (btype happySubAttrs_1) (btype happySubAttrs_3) , err = (err happySubAttrs_1) ++ (err happySubAttrs_3) , attr = Abs.Ge (attr happySubAttrs_1) (attr happySubAttrs_3)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_3 } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ btype = TS.rel (btype happySubAttrs_1) (btype happySubAttrs_3) , err = (err happySubAttrs_1) ++ (err happySubAttrs_3) , attr = Abs.Ge (attr happySubAttrs_1) (attr happySubAttrs_3)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_3 } in (happyConditions,happySelfAttrs)
 	)}}
 
 #if __GLASGOW_HASKELL__ >= 710

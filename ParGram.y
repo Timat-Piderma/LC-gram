@@ -219,7 +219,7 @@ RExp: RExp '||' RExp2
   {
     $$.attr = Abs.Or $1.attr $3.attr;
     $$.err = $1.err ++ $3.err;
-    $$.btype = $3.btype; 
+    $$.btype = TS.isBoolean (TS.sup $1.btype $3.btype); 
     $1.env = $$.env;  
     $3.env = $$.env;
   }
@@ -227,7 +227,7 @@ RExp: RExp '||' RExp2
   {
     $$.attr = Abs.And $1.attr $3.attr;
     $$.err = $1.err ++ $3.err;
-    $$.btype = $3.btype; 
+    $$.btype = TS.isBoolean (TS.sup $1.btype $3.btype); 
     $1.env = $$.env;
     $3.env = $$.env;
   }
@@ -235,7 +235,7 @@ RExp: RExp '||' RExp2
   { 
     $$.attr = Abs.Not $2.attr;
     $$.err = $2.err;
-    $$.btype = $2.btype; 
+    $$.btype = TS.isBoolean $2.btype; 
     $2.env = $$.env;
   }
   | RExp1 
@@ -251,7 +251,7 @@ RExp2
   { 
     $$.attr = Abs.Eq $1.attr $3.attr;
     $$.err = $1.err ++ $3.err;
-    $$.btype = TS.sup $1.btype $3.btype; 
+    $$.btype = TS.rel $1.btype $3.btype; 
     $1.env = $$.env;
     $3.env = $$.env;
   }
@@ -259,7 +259,7 @@ RExp2
   { 
     $$.attr = Abs.Neq $1.attr $3.attr;
     $$.err = $1.err ++ $3.err;
-    $$.btype = TS.sup $1.btype $3.btype; 
+    $$.btype = TS.rel $1.btype $3.btype; 
     $1.env = $$.env;
     $3.env = $$.env;
   }
@@ -267,7 +267,7 @@ RExp2
   { 
     $$.attr = Abs.Lt $1.attr $3.attr;
     $$.err = $1.err ++ $3.err;
-    $$.btype = TS.sup $1.btype $3.btype; 
+    $$.btype = TS.rel $1.btype $3.btype; 
     $1.env = $$.env;
     $3.env = $$.env;
   }
@@ -275,7 +275,7 @@ RExp2
   { 
     $$.attr = Abs.Gt $1.attr $3.attr;
     $$.err = $1.err ++ $3.err;
-    $$.btype = TS.sup $1.btype $3.btype; 
+    $$.btype = TS.rel $1.btype $3.btype; 
     $1.env = $$.env;
     $3.env = $$.env;
   }
@@ -283,7 +283,7 @@ RExp2
   { 
     $$.attr = Abs.Le $1.attr $3.attr;
     $$.err = $1.err ++ $3.err;
-    $$.btype = TS.sup $1.btype $3.btype; 
+    $$.btype = TS.rel $1.btype $3.btype; 
     $1.env = $$.env;
     $3.env = $$.env;
   }
@@ -291,7 +291,7 @@ RExp2
   { 
     $$.attr = Abs.Ge $1.attr $3.attr;
     $$.err = $1.err ++ $3.err;
-    $$.btype = TS.sup $1.btype $3.btype; 
+    $$.btype = TS.rel $1.btype $3.btype; 
     $1.env = $$.env;
     $3.env = $$.env;
   }
