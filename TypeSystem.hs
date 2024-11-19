@@ -9,6 +9,11 @@ data Type = Base BasicType | ARRAY Integer Type
 -- Given two Types, returns the superior one, ERROR if not compatible
 sup :: Type -> Type -> Type
 sup (Base INT)(Base INT)          = Base INT
+sup (Base FLOAT)(Base FLOAT)      = Base FLOAT
+sup (Base BOOL)(Base BOOL)        = Base BOOL
+sup (Base CHAR)(Base CHAR)        = Base CHAR
+sup (Base STRING)(Base STRING)    = Base STRING
+
 sup (Base FLOAT) (Base INT)       = Base FLOAT
 sup (Base INT) (Base FLOAT)       = Base FLOAT
 sup (Base INT) (Base BOOL)        = Base INT
