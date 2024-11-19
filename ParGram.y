@@ -186,7 +186,7 @@ Stm: Decl
   {  
     $$.attr = Abs.Assignment $1.attr $3.attr;
     $$.modifiedEnv = E.insertVar $1.ident (posLineCol $$.pos) $$.btype $$.env;
-    $$.err = ["Assignment"];
+    $$.err = TS.mkAssignmentErrs (E.getVarType $1.ident $$.env) $3.btype;
     $$.ident = $1.ident;
     $$.pos = $1.pos;
     $$.btype = TS.sup (E.getVarType $1.ident $$.env) (E.getVarType $3.ident $$.env);

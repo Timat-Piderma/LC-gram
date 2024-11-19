@@ -58,3 +58,19 @@ mkArrElemTy _ _ = Base ERROR
 isBoolean :: Type -> Type
 isBoolean (Base BOOL) = Base BOOL
 isBoolean _ = Base ERROR
+
+mkAssignmentErrs :: Type -> Type -> [String]
+mkAssignmentErrs t1 t2
+  | isERROR t1 && isERROR t2 = [ mkSerr t1 , mkSerr t2]
+  | isERROR t1 = [ mkSerr t1]
+  | isERROR t2 = [ mkSerr t2]
+  | sup t1 t2 == t1 = []
+  | otherwise = [ "Type mismatch: " ++ typeToString t1 ++ " and " ++ typeToString t2]
+
+isERROR :: Type -> Bool
+isERROR (Base ERROR) = True
+isERROR _ = False
+
+mkSerr :: Type -> String
+mkSerr (Base ERROR) = "Error"
+mkSerr _ = "Internal Error" -- Should never happen
