@@ -172,8 +172,8 @@ resWords =
        (b "True" 20
           (b "False" 18 (b ">=" 17 N N) (b "String" 19 N N))
           (b "]" 22 (b "[" 21 N N) (b "bool" 23 N N)))
-       (b "then" 28
-          (b "if" 26 (b "float" 25 N N) (b "int" 27 N N))
+       (b "int" 28
+          (b "float" 26 (b "else" 25 N N) (b "if" 27 N N))
           (b "||" 30 (b "{" 29 N N) (b "}" 31 N N))))
   where
   b s n = B bs (TS bs n)

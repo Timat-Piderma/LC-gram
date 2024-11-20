@@ -56,10 +56,10 @@ import LexGram
   ']'      { PT _ (TS _ 22) }
   'bool'   { PT _ (TS _ 23) }
   'char'   { PT _ (TS _ 24) }
-  'float'  { PT _ (TS _ 25) }
-  'if'     { PT _ (TS _ 26) }
-  'int'    { PT _ (TS _ 27) }
-  'then'   { PT _ (TS _ 28) }
+  'else'   { PT _ (TS _ 25) }
+  'float'  { PT _ (TS _ 26) }
+  'if'     { PT _ (TS _ 27) }
+  'int'    { PT _ (TS _ 28) }
   '{'      { PT _ (TS _ 29) }
   '||'     { PT _ (TS _ 30) }
   '}'      { PT _ (TS _ 31) }
@@ -185,13 +185,22 @@ Stm: Decl
     $$.ident = $1.ident;
     $$.btype = $1.btype;
   }
-  | 'if' '(' RExp ')' 'then' '{' ListStm '}'
+  | 'if' '(' RExp ')' '{' ListStm '}'
   { 
-    $$.attr = Abs.IfThen $3.attr $7.attr;
+    $$.attr = Abs.IfThen $3.attr $6.attr;
     $3.env = $$.env;
-    $7.env = $$.env;
+    $6.env = $$.env;
     $$.modifiedEnv = $$.env;
-    $$.err = Err.mkIfErrs $3.btype $7.err;
+    $$.err = Err.mkIfErrs $3.btype $6.err;
+  }
+  | 'if' '(' RExp ')' '{' ListStm '}' 'else' '{' ListStm '}' 
+  { 
+    $$.attr = Abs.IfThenElse $3.attr $6.attr $10.attr;
+    $3.env = $$.env;
+    $6.env = $$.env;
+    $10.env = $$.env;
+    $$.modifiedEnv = $$.env;
+    $$.err = Err.mkIfErrs $3.btype ($6.err ++ $10.err);
   }
   | Ident '=' RExp 
   {  
@@ -429,5 +438,3 @@ myLexer :: String -> [Token]
 myLexer = tokens
 
 }
-
- 

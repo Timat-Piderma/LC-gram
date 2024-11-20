@@ -164,7 +164,8 @@ instance Print AbsGram.Boolean where
 instance Print AbsGram.Stm where
   prt i = \case
     AbsGram.Declaration decl -> prPrec i 0 (concatD [prt 0 decl])
-    AbsGram.IfThen rexp stms -> prPrec i 0 (concatD [doc (showString "if"), doc (showString "("), prt 0 rexp, doc (showString ")"), doc (showString "then"), doc (showString "{"), prt 0 stms, doc (showString "}")])
+    AbsGram.IfThen rexp stms -> prPrec i 0 (concatD [doc (showString "if"), doc (showString "("), prt 0 rexp, doc (showString ")"), doc (showString "{"), prt 0 stms, doc (showString "}")])
+    AbsGram.IfThenElse rexp stms1 stms2 -> prPrec i 0 (concatD [doc (showString "if"), doc (showString "("), prt 0 rexp, doc (showString ")"), doc (showString "{"), prt 0 stms1, doc (showString "}"), doc (showString "else"), doc (showString "{"), prt 0 stms2, doc (showString "}")])
     AbsGram.Assignment id_ rexp -> prPrec i 0 (concatD [prt 0 id_, doc (showString "="), prt 0 rexp])
 
 instance Print AbsGram.Decl where

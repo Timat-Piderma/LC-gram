@@ -9,7 +9,8 @@ Declaration.                Stm ::= Decl;
 VarDeclaration.             Decl ::= BasicType Ident "=" RExp;
 ArrayDeclaration.           Decl ::= BasicType Ident "[" Integer "]";
 
-IfThen.                     Stm ::= "if" "(" RExp ")" "then" "{" [Stm] "}" ;
+IfThen.                     Stm ::= "if" "(" RExp ")" "{" [Stm] "}";
+IfThenElse.                 Stm ::= "if" "(" RExp ")" "{" [Stm] "}" "else" "{" [Stm] "}";
 
 Assignment.                 Stm ::= Ident "=" RExp;
 
