@@ -39,6 +39,7 @@ transBoolean x = case x of
 transStm :: AbsGram.Stm -> Result
 transStm x = case x of
   AbsGram.Declaration decl -> failure x
+  AbsGram.IfThen rexp stms -> failure x
   AbsGram.Assignment ident rexp -> failure x
 
 transDecl :: AbsGram.Decl -> Result

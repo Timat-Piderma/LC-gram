@@ -56,8 +56,12 @@ import LexGram
   'bool'   { PT _ (TS _ 23) }
   'char'   { PT _ (TS _ 24) }
   'float'  { PT _ (TS _ 25) }
-  'int'    { PT _ (TS _ 26) }
-  '||'     { PT _ (TS _ 27) }
+  'if'     { PT _ (TS _ 26) }
+  'int'    { PT _ (TS _ 27) }
+  'then'   { PT _ (TS _ 28) }
+  '{'      { PT _ (TS _ 29) }
+  '||'     { PT _ (TS _ 30) }
+  '}'      { PT _ (TS _ 31) }
   L_Ident  { PT _ (TV $$)   }
   L_charac { PT _ (TC $$)   }
   L_doubl  { PT _ (TD $$)   }
@@ -182,6 +186,14 @@ Stm: Decl
     $$.ident = $1.ident;
     $$.btype = $1.btype;
   }
+  | 'if' '(' RExp ')' 'then' '{' ListStm '}'
+  { 
+    $$.attr = Abs.IfThen $3.attr $7.attr;
+    $3.env = $$.env;
+    $7.env = $$.env;
+    $$.modifiedEnv = $7.modifiedEnv;
+    $$.err = TS.mkIfErrs $3.btype $7.err;
+  }
   | Ident '=' RExp 
   {  
     $$.attr = Abs.Assignment $1.attr $3.attr;
@@ -244,8 +256,7 @@ RExp: RExp '||' RExp2
     $1.env = $$.env;
   }
 
-RExp2
-  : RExp2 '==' RExp3 
+RExp2: RExp2 '==' RExp3 
   { 
     $$.attr = Abs.Eq $1.attr $3.attr;
     $$.err = $1.err ++ $3.err;
@@ -402,6 +413,7 @@ RExp1 : RExp2
 }
 
 {
+
 data Result = Result Abs.Program [String] deriving (Show)
 
 type Err = Either String
@@ -419,3 +431,4 @@ myLexer = tokens
 
 }
 
+ 

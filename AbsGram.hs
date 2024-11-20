@@ -24,7 +24,8 @@ data BasicType
 data Boolean = Boolean_True | Boolean_False
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data Stm = Declaration Decl | Assignment Ident RExp
+data Stm
+    = Declaration Decl | IfThen RExp [Stm] | Assignment Ident RExp
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Decl
