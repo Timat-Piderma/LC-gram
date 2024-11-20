@@ -56,19 +56,20 @@ import LexGram
   ']'      { PT _ (TS _ 22) }
   'bool'   { PT _ (TS _ 23) }
   'char'   { PT _ (TS _ 24) }
-  'else'   { PT _ (TS _ 25) }
-  'float'  { PT _ (TS _ 26) }
-  'if'     { PT _ (TS _ 27) }
-  'int'    { PT _ (TS _ 28) }
-  '{'      { PT _ (TS _ 29) }
-  '||'     { PT _ (TS _ 30) }
-  '}'      { PT _ (TS _ 31) }
+  'do'     { PT _ (TS _ 25) }
+  'else'   { PT _ (TS _ 26) }
+  'float'  { PT _ (TS _ 27) }
+  'if'     { PT _ (TS _ 28) }
+  'int'    { PT _ (TS _ 29) }
+  'while'  { PT _ (TS _ 30) }
+  '{'      { PT _ (TS _ 31) }
+  '||'     { PT _ (TS _ 32) }
+  '}'      { PT _ (TS _ 33) }
   L_Ident  { PT _ (TV $$)   }
   L_charac { PT _ (TC $$)   }
   L_doubl  { PT _ (TD $$)   }
   L_integ  { PT _ (TI $$)   }
   L_quoted { PT _ (TL $$)   }
-
 %attributetype {Attr a}
 %attribute res { Result }
 %attribute attr { a }
@@ -201,6 +202,22 @@ Stm: Decl
     $10.env = $$.env;
     $$.modifiedEnv = $$.env;
     $$.err = Err.mkIfErrs $3.btype ($6.err ++ $10.err);
+  }
+  | 'while' '(' RExp ')' '{' ListStm '}' 
+  { 
+    $$.attr = Abs.WhileDo $3.attr $6.attr; 
+    $3.env = $$.env;
+    $6.env = $$.env;
+    $$.modifiedEnv = $$.env;
+    $$.err = Err.mkIfErrs $3.btype $6.err;
+  }
+  | 'do' '{' ListStm '}' 'while' '(' RExp ')' 
+  { 
+    $$.attr = Abs.DoWhile $3.attr $7.attr;
+    $3.env = $$.env;
+    $7.env = $$.env;
+    $$.modifiedEnv = $$.env;
+    $$.err = Err.mkIfErrs $7.btype $3.err; 
   }
   | Ident '=' RExp 
   {  

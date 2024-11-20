@@ -28,6 +28,8 @@ data Stm
     = Declaration Decl
     | IfThen RExp [Stm]
     | IfThenElse RExp [Stm] [Stm]
+    | WhileDo RExp [Stm]
+    | DoWhile [Stm] RExp
     | Assignment Ident RExp
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 

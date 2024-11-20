@@ -166,6 +166,8 @@ instance Print AbsGram.Stm where
     AbsGram.Declaration decl -> prPrec i 0 (concatD [prt 0 decl])
     AbsGram.IfThen rexp stms -> prPrec i 0 (concatD [doc (showString "if"), doc (showString "("), prt 0 rexp, doc (showString ")"), doc (showString "{"), prt 0 stms, doc (showString "}")])
     AbsGram.IfThenElse rexp stms1 stms2 -> prPrec i 0 (concatD [doc (showString "if"), doc (showString "("), prt 0 rexp, doc (showString ")"), doc (showString "{"), prt 0 stms1, doc (showString "}"), doc (showString "else"), doc (showString "{"), prt 0 stms2, doc (showString "}")])
+    AbsGram.WhileDo rexp stms -> prPrec i 0 (concatD [doc (showString "while"), doc (showString "("), prt 0 rexp, doc (showString ")"), doc (showString "{"), prt 0 stms, doc (showString "}")])
+    AbsGram.DoWhile stms rexp -> prPrec i 0 (concatD [doc (showString "do"), doc (showString "{"), prt 0 stms, doc (showString "}"), doc (showString "while"), doc (showString "("), prt 0 rexp, doc (showString ")")])
     AbsGram.Assignment id_ rexp -> prPrec i 0 (concatD [prt 0 id_, doc (showString "="), prt 0 rexp])
 
 instance Print AbsGram.Decl where

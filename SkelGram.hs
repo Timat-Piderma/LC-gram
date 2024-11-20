@@ -41,6 +41,8 @@ transStm x = case x of
   AbsGram.Declaration decl -> failure x
   AbsGram.IfThen rexp stms -> failure x
   AbsGram.IfThenElse rexp stms1 stms2 -> failure x
+  AbsGram.WhileDo rexp stms -> failure x
+  AbsGram.DoWhile stms rexp -> failure x
   AbsGram.Assignment ident rexp -> failure x
 
 transDecl :: AbsGram.Decl -> Result

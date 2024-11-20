@@ -12,6 +12,9 @@ ArrayDeclaration.           Decl ::= BasicType Ident "[" Integer "]";
 IfThen.                     Stm ::= "if" "(" RExp ")" "{" [Stm] "}";
 IfThenElse.                 Stm ::= "if" "(" RExp ")" "{" [Stm] "}" "else" "{" [Stm] "}";
 
+WhileDo.                    Stm ::= "while" "(" RExp ")" "{" [Stm] "}";
+DoWhile.                    Stm ::= "do" "{" [Stm] "}" "while" "(" RExp ")";
+
 Assignment.                 Stm ::= Ident "=" RExp;
 
 Or.                         RExp ::= RExp "||" RExp2;
