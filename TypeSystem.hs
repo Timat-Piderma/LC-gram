@@ -1,6 +1,6 @@
 module TypeSystem where
 
-data BasicType = ERROR | INT | FLOAT | BOOL | CHAR | STRING
+data BasicType = ERROR String | INT | FLOAT | BOOL | CHAR | STRING
   deriving (Eq, Show, Read)
 
 data Type = Base BasicType | ARRAY Integer Type
@@ -23,10 +23,10 @@ sup (Base CHAR) (Base STRING)     = Base STRING
 sup (Base INT) (Base CHAR)        = Base INT
 sup (Base CHAR) (Base INT)        = Base INT
 
-sup _ _                           = Base ERROR
+sup _ _                           = Base (ERROR "Type mismatch")
 
 typeToString :: Type -> String
-typeToString (Base ERROR)  = "Error"
+typeToString (Base (ERROR s))  = s
 typeToString (Base INT)    = "Integer"
 typeToString (Base FLOAT)  = "Double"
 typeToString (Base BOOL)   = "Boolean"
@@ -39,25 +39,25 @@ mathtype FLOAT      = FLOAT
 mathtype INT        = INT
 mathtype BOOL       = INT
 mathtype CHAR       = INT
-mathtype _          = ERROR
+mathtype _          = ERROR "Cannot perform arithmetic operations on this type"
 
 -- Type of relational operators
 rel :: Type -> Type -> Type
 rel x y = case sup x y of
-  Base ERROR              -> Base ERROR
+  Base (ERROR d)            -> Base (ERROR d)
   _                         -> Base BOOL
 
 -- Given an array type and index type, returns the type of the array element if t2 is an appropriate index (INT)
 mkArrElemTy :: Type -> Type -> Type
 mkArrElemTy (ARRAY _ t1) t2 = case sup t2 (Base INT) of
   Base INT -> t1
-  _   -> Base ERROR
-mkArrElemTy _ _ = Base ERROR
+  _   -> Base (ERROR "Error: array index must be an integer")
+mkArrElemTy _ _ = Base (ERROR "Error: not an array")
 
 -- Checks if a value is boolean
 isBoolean :: Type -> Type
 isBoolean (Base BOOL) = Base BOOL
-isBoolean _ = Base ERROR
+isBoolean _ = Base (ERROR "Error: not a boolean")
 
 mkAssignmentErrs :: Type -> Type -> [String]
 mkAssignmentErrs t1 t2
@@ -68,9 +68,15 @@ mkAssignmentErrs t1 t2
   | otherwise = [ "Type mismatch: " ++ typeToString t1 ++ " and " ++ typeToString t2]
 
 isERROR :: Type -> Bool
-isERROR (Base ERROR) = True
+isERROR (Base (ERROR _)) = True
 isERROR _ = False
 
 mkSerr :: Type -> String
-mkSerr (Base ERROR) = "Error"
+mkSerr (Base (ERROR s)) = s
 mkSerr _ = "Internal Error" -- Should never happen
+
+mkIfErrs :: Type -> [String] -> [String]
+mkIfErrs t errs = case t of
+  Base (ERROR e) ->  e : errs
+  Base BOOL -> errs
+  _ -> "Error: guard not bool" : errs

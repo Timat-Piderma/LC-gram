@@ -41,4 +41,4 @@ getVarPos varName env = case Map.lookup varName env of
 getVarType :: String -> EnvT -> Type
 getVarType varName env = case Map.lookup varName env of
     Just entry  -> btype entry
-    Nothing     -> Base ERROR
+    Nothing     -> Base (ERROR ("Variable '" ++ varName ++ "' not declared"))
