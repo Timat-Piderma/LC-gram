@@ -11,6 +11,7 @@ import Prelude
 
 import qualified TypeSystem as TS
 import qualified Env as E
+import qualified ErrS as Err
 import qualified AbsGram as Abs 
 import LexGram
 
@@ -180,9 +181,7 @@ Stm: Decl
     $$.attr = Abs.Declaration $1.attr;
     $1.env = $$.env; 
     $$.modifiedEnv = $1.modifiedEnv;
-    $$.err = if E.containsVar $1.ident $$.env
-      then ["Environment already contains " ++ $1.ident ++ " declared at " ++ (show (E.getVarPos $1.ident $$.env)) ++ " of type: " ++ (TS.typeToString(E.getVarType $1.ident $$.env)) ] ++ $1.err
-      else $1.err;
+    $$.err = $1.err;
     $$.ident = $1.ident;
     $$.btype = $1.btype;
   }
@@ -192,13 +191,13 @@ Stm: Decl
     $3.env = $$.env;
     $7.env = $$.env;
     $$.modifiedEnv = $$.env;
-    $$.err = TS.mkIfErrs $3.btype $7.err;
+    $$.err = Err.mkIfErrs $3.btype $7.err;
   }
   | Ident '=' RExp 
   {  
     $$.attr = Abs.Assignment $1.attr $3.attr;
     $$.modifiedEnv = E.insertVar $1.ident (posLineCol $$.pos) $$.btype $$.env;
-    $$.err = TS.mkAssignmentErrs (E.getVarType $1.ident $$.env) $3.btype;
+    $$.err = Err.mkAssignmentErrs (E.getVarType $1.ident $$.env) $3.btype;
     $$.ident = $1.ident;
     $$.pos = $1.pos;
     $$.btype = TS.sup (E.getVarType $1.ident $$.env) (E.getVarType $3.ident $$.env);
@@ -209,7 +208,7 @@ Decl: BasicType Ident '=' RExp
   {   
     $$.attr = Abs.VarDeclaration $1.attr $2.attr $4.attr;
     $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
-    $$.err = $4.err;
+    $$.err = Err.mkDeclErrs $1.btype $4.btype $$.env $2.ident; 
     $$.ident = $2.ident;
     $$.pos = $2.pos;
     $$.btype = TS.sup $4.btype $1.btype;
@@ -219,7 +218,7 @@ Decl: BasicType Ident '=' RExp
   { 
     $$.attr = Abs.ArrayDeclaration $1.attr $2.attr $4.attr;
     $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
-    $$.err = $4.err;
+    $$.err = Err.mkDeclErrs $1.btype $4.btype $$.env $2.ident;
     $$.ident = $2.ident;
     $$.pos = $2.pos;
     $$.btype = TS.mkArrElemTy (TS.ARRAY $4.attr $1.btype) $4.btype; 

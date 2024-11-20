@@ -50,33 +50,15 @@ rel x y = case sup x y of
 -- Given an array type and index type, returns the type of the array element if t2 is an appropriate index (INT)
 mkArrElemTy :: Type -> Type -> Type
 mkArrElemTy (ARRAY _ t1) t2 = case sup t2 (Base INT) of
-  Base INT -> t1
-  _   -> Base (ERROR "Error: array index must be an integer")
-mkArrElemTy _ _ = Base (ERROR "Error: not an array")
+  Base INT                  -> t1
+  _                         -> Base (ERROR "Error: array index must be an integer")
+mkArrElemTy _ _     = Base (ERROR "Error: not an array")
 
 -- Checks if a value is boolean
 isBoolean :: Type -> Type
 isBoolean (Base BOOL) = Base BOOL
 isBoolean _ = Base (ERROR "Error: not a boolean")
 
-mkAssignmentErrs :: Type -> Type -> [String]
-mkAssignmentErrs t1 t2
-  | isERROR t1 && isERROR t2 = [ mkSerr t1 , mkSerr t2]
-  | isERROR t1 = [ mkSerr t1]
-  | isERROR t2 = [ mkSerr t2]
-  | sup t1 t2 == t1 = []
-  | otherwise = [ "Type mismatch: " ++ typeToString t1 ++ " and " ++ typeToString t2]
-
 isERROR :: Type -> Bool
 isERROR (Base (ERROR _)) = True
 isERROR _ = False
-
-mkSerr :: Type -> String
-mkSerr (Base (ERROR s)) = s
-mkSerr _ = "Internal Error" -- Should never happen
-
-mkIfErrs :: Type -> [String] -> [String]
-mkIfErrs t errs = case t of
-  Base (ERROR e) ->  e : errs
-  Base BOOL -> errs
-  _ -> "Error: guard not bool" : errs
