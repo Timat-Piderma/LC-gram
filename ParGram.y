@@ -191,7 +191,7 @@ Stm: Decl
     $$.attr = Abs.IfThen $3.attr $7.attr;
     $3.env = $$.env;
     $7.env = $$.env;
-    $$.modifiedEnv = $7.modifiedEnv;
+    $$.modifiedEnv = $$.env;
     $$.err = TS.mkIfErrs $3.btype $7.err;
   }
   | Ident '=' RExp 

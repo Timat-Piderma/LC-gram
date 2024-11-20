@@ -373,7 +373,7 @@ happyReduction_27 (happy_x_8 `HappyStk`
 	 = case happyOut25 happy_x_3 of { happy_var_3 -> 
 	case happyOut22 happy_x_7 of { happy_var_7 -> 
 	happyIn23
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ err = TS.mkIfErrs (btype happySubAttrs_3) (err happySubAttrs_7) , modifiedEnv = (modifiedEnv happySubAttrs_7) , attr = Abs.IfThen (attr happySubAttrs_3) (attr happySubAttrs_7)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_7,happySubAttrs_7) = happy_var_7 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_3 Prelude.++ happyConditions_7 } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ err = TS.mkIfErrs (btype happySubAttrs_3) (err happySubAttrs_7) , modifiedEnv = (env happySelfAttrs) , attr = Abs.IfThen (attr happySubAttrs_3) (attr happySubAttrs_7)  }; (happyConditions_3,happySubAttrs_3) = happy_var_3 happyEmptyAttrs{ env = (env happySelfAttrs)  }; (happyConditions_7,happySubAttrs_7) = happy_var_7 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_3 Prelude.++ happyConditions_7 } in (happyConditions,happySelfAttrs)
 	) `HappyStk` happyRest}}
 
 #if __GLASGOW_HASKELL__ >= 710
