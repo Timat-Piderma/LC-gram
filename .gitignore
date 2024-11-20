@@ -1,7 +1,7 @@
-# Ignora tutto
+# Ignore everything
 /*
 
-# Escludi dalla ignoranza i file specificati
+# Exclude specified files
 !AbsGram.hs
 !Env.hs
 !ErrM.hs
