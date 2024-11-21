@@ -26,7 +26,7 @@ sup (Base CHAR) (Base INT)        = Base INT
 sup (Base (ERROR s)) _            = Base (ERROR s)
 sup _ (Base (ERROR s))            = Base (ERROR s)
 
-sup _ _                           = Base (ERROR "Type mismatch")
+sup t1 t2                           = Base (ERROR ("Type mismatch: " ++ typeToString t1 ++ " and " ++ typeToString t2 ++ " are not compatible"))
 
 typeToString :: Type -> String
 typeToString (Base (ERROR s))  = s

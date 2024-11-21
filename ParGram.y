@@ -192,7 +192,7 @@ Stm: Decl
     $3.env = $$.env;
     $6.env = $$.env;
     $$.modifiedEnv = $$.env;
-    $$.err = Err.mkIfErrs $3.btype $6.err;
+    $$.err = Err.mkIfErrs $3.btype $6.err (posLineCol (tokenPosn $1));
   }
   | 'if' '(' RExp ')' '{' ListStm '}' 'else' '{' ListStm '}' 
   { 
@@ -201,7 +201,7 @@ Stm: Decl
     $6.env = $$.env;
     $10.env = $$.env;
     $$.modifiedEnv = $$.env;
-    $$.err = Err.mkIfErrs $3.btype ($6.err ++ $10.err);
+    $$.err = Err.mkIfErrs $3.btype ($6.err ++ $10.err) (posLineCol (tokenPosn $1));
   }
   | 'while' '(' RExp ')' '{' ListStm '}' 
   { 
@@ -209,7 +209,7 @@ Stm: Decl
     $3.env = $$.env;
     $6.env = $$.env;
     $$.modifiedEnv = $$.env;
-    $$.err = Err.mkIfErrs $3.btype $6.err;
+    $$.err = Err.mkIfErrs $3.btype $6.err (posLineCol (tokenPosn $1));
   }
   | 'do' '{' ListStm '}' 'while' '(' RExp ')' 
   { 
@@ -217,13 +217,13 @@ Stm: Decl
     $3.env = $$.env;
     $7.env = $$.env;
     $$.modifiedEnv = $$.env;
-    $$.err = Err.mkIfErrs $7.btype $3.err; 
+    $$.err = Err.mkIfErrs $7.btype $3.err (posLineCol (tokenPosn $1)); 
   }
   | Ident '=' RExp 
   {  
     $$.attr = Abs.Assignment $1.attr $3.attr;
     $$.modifiedEnv = E.insertVar $1.ident (posLineCol $$.pos) $$.btype $$.env;
-    $$.err = Err.mkAssignmentErrs (E.getVarType $1.ident $$.env) $3.btype;
+    $$.err = Err.mkAssignmentErrs (E.getVarType $1.ident $$.env) $3.btype (posLineCol $$.pos);
     $$.ident = $1.ident;
     $$.pos = $1.pos;
     $$.btype = TS.sup (E.getVarType $1.ident $$.env) (E.getVarType $3.ident $$.env);
@@ -234,7 +234,7 @@ Decl: BasicType Ident '=' RExp
   {   
     $$.attr = Abs.VarDeclaration $1.attr $2.attr $4.attr;
     $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
-    $$.err = Err.mkDeclErrs $1.btype $4.btype $$.env $2.ident; 
+    $$.err = Err.mkDeclErrs $1.btype $4.btype $$.env $2.ident (posLineCol $$.pos); 
     $$.ident = $2.ident;
     $$.pos = $2.pos;
     $$.btype = TS.sup $4.btype $1.btype;
@@ -244,7 +244,7 @@ Decl: BasicType Ident '=' RExp
   { 
     $$.attr = Abs.ArrayDeclaration $1.attr $2.attr $4.attr;
     $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
-    $$.err = Err.mkDeclErrs $1.btype $4.btype $$.env $2.ident;
+    $$.err = Err.mkDeclErrs $1.btype $4.btype $$.env $2.ident (posLineCol $$.pos);
     $$.ident = $2.ident;
     $$.pos = $2.pos;
     $$.btype = TS.mkArrElemTy (TS.ARRAY $4.attr $1.btype) $4.btype; 
