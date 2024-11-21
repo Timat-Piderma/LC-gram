@@ -23,6 +23,9 @@ sup (Base CHAR) (Base STRING)     = Base STRING
 sup (Base INT) (Base CHAR)        = Base INT
 sup (Base CHAR) (Base INT)        = Base INT
 
+sup (Base (ERROR s)) _            = Base (ERROR s)
+sup _ (Base (ERROR s))            = Base (ERROR s)
+
 sup _ _                           = Base (ERROR "Type mismatch")
 
 typeToString :: Type -> String
