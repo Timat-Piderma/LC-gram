@@ -3,8 +3,6 @@ import Data.Map as Map
 
 import TypeSystem as TS 
 import AbsGram as Abs
-import GHC.Exts.Heap (StgInfoTable(entry))
-import Distribution.Compat.Lens (_1)
 
 type EnvT = Map.Map String EnvEntity
 
