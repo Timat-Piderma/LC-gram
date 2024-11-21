@@ -245,10 +245,10 @@ Decl: BasicType Ident '=' RExp
   { 
     $$.attr = Abs.ArrayDeclaration $1.attr $2.attr $4.attr;
     $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
-    $$.err = Err.mkArrayDeclErrs $$.btype $$.env $2.ident (posLineCol $$.pos);
+    $$.err = Err.mkArrayDeclErrs $4.btype $$.env $2.ident (posLineCol $$.pos);
     $$.ident = $2.ident;
     $$.pos = $2.pos;
-    $$.btype = TS.mkArrElemTy (TS.ARRAY $4.btype $1.btype) $4.btype;  
+    $$.btype = (TS.ARRAY $4.btype $1.btype);  
   }
 
 

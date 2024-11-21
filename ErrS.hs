@@ -31,7 +31,7 @@ mkDeclErrs t1 t2 env varName pos
     | otherwise = [ mkSerr (Base (ERROR ("Type mismatch: can't convert " ++ typeToString t2 ++ " to " ++ typeToString t1))) pos]
 
 mkArrayDeclErrs :: Type -> EnvT -> String -> (Int, Int) -> [String]
-mkArrayDeclErrs arrayType env varName pos
+mkArrayDeclErrs indexType env varName pos
     | containsVar varName env = [mkSerr (Base (ERROR ("Variable '" ++ varName ++ "' already declared at: " ++ show (getVarPos varName env)))) pos]
-    | isERROR arrayType = [ mkSerr arrayType pos]
+    | sup indexType (Base INT) /= Base INT = [ mkSerr (Base (ERROR "Error: array index must be an integer")) pos]
     | otherwise = [] 
