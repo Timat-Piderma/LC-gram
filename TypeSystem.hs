@@ -23,10 +23,15 @@ sup (Base CHAR) (Base STRING)     = Base STRING
 sup (Base INT) (Base CHAR)        = Base INT
 sup (Base CHAR) (Base INT)        = Base INT
 
+sup (ARRAY _ t1) (ARRAY _ t2) = 
+  if t1 == t2 
+    then ARRAY (Base INT) t1 
+  else Base (ERROR ("Array types "++ typeToString t1 ++ " and " ++ typeToString t2 ++ " do not match"))
+
 sup (Base (ERROR s)) _            = Base (ERROR s)
 sup _ (Base (ERROR s))            = Base (ERROR s)
 
-sup t1 t2                           = Base (ERROR ("Type mismatch: " ++ typeToString t1 ++ " and " ++ typeToString t2 ++ " are not compatible"))
+sup t1 t2                         = Base (ERROR ("Type mismatch: " ++ typeToString t1 ++ " and " ++ typeToString t2 ++ " are not compatible"))
 
 typeToString :: Type -> String
 typeToString (Base (ERROR s))  = s
@@ -36,6 +41,7 @@ typeToString (Base BOOL)   = "Boolean"
 typeToString (Base CHAR)   = "Character"
 typeToString (Base STRING) = "String"
 
+typeToString (ARRAY t1 t2) = "Array of " ++ typeToString t2;
 -- Given a BasicType, returns the mathematical BasicType equivalent
 mathtype :: BasicType -> BasicType
 mathtype FLOAT      = FLOAT
@@ -49,13 +55,6 @@ rel :: Type -> Type -> Type
 rel x y = case sup x y of
   Base (ERROR d)            -> Base (ERROR d)
   _                         -> Base BOOL
-
--- Given an array type and index type, returns the type of the array element if t2 is an appropriate index (INT)
-mkArrElemTy :: Type -> Type -> Type
-mkArrElemTy (ARRAY _ t1) t2 = case sup t2 (Base INT) of
-  Base INT                  -> t1
-  _                         -> Base (ERROR "Error: array index must be an integer")
-mkArrElemTy _ _     = Base (ERROR "Error: not an array")
 
 -- Checks if a value is boolean
 isBoolean :: Type -> Type
