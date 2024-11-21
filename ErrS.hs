@@ -29,3 +29,9 @@ mkDeclErrs t1 t2 env varName pos
     | isERROR t2 = [ mkSerr t2 pos]
     | sup t1 t2 == t1 = []
     | otherwise = [ mkSerr (Base (ERROR ("Type mismatch: can't convert " ++ typeToString t2 ++ " to " ++ typeToString t1))) pos]
+
+mkArrayDeclErrs :: Type -> EnvT -> String -> (Int, Int) -> [String]
+mkArrayDeclErrs arrayType env varName pos
+    | containsVar varName env = [mkSerr (Base (ERROR ("Variable '" ++ varName ++ "' already declared at: " ++ show (getVarPos varName env)))) pos]
+    | isERROR arrayType = [ mkSerr arrayType pos]
+    | otherwise = [] 
