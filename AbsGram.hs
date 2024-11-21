@@ -35,7 +35,7 @@ data Stm
 
 data Decl
     = VarDeclaration BasicType Ident RExp
-    | ArrayDeclaration BasicType Ident Integer
+    | ArrayDeclaration BasicType Ident RExp
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data RExp

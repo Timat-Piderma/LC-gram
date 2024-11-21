@@ -7,7 +7,7 @@ rules Boolean ::= "True" | "False";
 Declaration.                Stm ::= Decl;
 
 VarDeclaration.             Decl ::= BasicType Ident "=" RExp;
-ArrayDeclaration.           Decl ::= BasicType Ident "[" Integer "]";
+ArrayDeclaration.           Decl ::= BasicType Ident "[" RExp "]";
 
 IfThen.                     Stm ::= "if" "(" RExp ")" "{" [Stm] "}";
 IfThenElse.                 Stm ::= "if" "(" RExp ")" "{" [Stm] "}" "else" "{" [Stm] "}";

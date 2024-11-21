@@ -3,7 +3,7 @@ module TypeSystem where
 data BasicType = ERROR String | INT | FLOAT | BOOL | CHAR | STRING
   deriving (Eq, Show, Read)
 
-data Type = Base BasicType | ARRAY Integer Type
+data Type = Base BasicType | ARRAY Type Type
   deriving (Eq, Show, Read)
 
 -- Given two Types, returns the superior one, ERROR if not compatible

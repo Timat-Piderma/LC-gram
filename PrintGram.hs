@@ -173,7 +173,7 @@ instance Print AbsGram.Stm where
 instance Print AbsGram.Decl where
   prt i = \case
     AbsGram.VarDeclaration basictype id_ rexp -> prPrec i 0 (concatD [prt 0 basictype, prt 0 id_, doc (showString "="), prt 0 rexp])
-    AbsGram.ArrayDeclaration basictype id_ n -> prPrec i 0 (concatD [prt 0 basictype, prt 0 id_, doc (showString "["), prt 0 n, doc (showString "]")])
+    AbsGram.ArrayDeclaration basictype id_ rexp -> prPrec i 0 (concatD [prt 0 basictype, prt 0 id_, doc (showString "["), prt 0 rexp, doc (showString "]")])
 
 instance Print AbsGram.RExp where
   prt i = \case

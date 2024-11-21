@@ -13,6 +13,7 @@ import qualified TypeSystem as TS
 import qualified Env as E
 import qualified ErrS as Err
 import qualified AbsGram as Abs 
+
 import LexGram
 
 }
@@ -70,6 +71,7 @@ import LexGram
   L_doubl  { PT _ (TD $$)   }
   L_integ  { PT _ (TI $$)   }
   L_quoted { PT _ (TL $$)   }
+
 %attributetype {Attr a}
 %attribute res { Result }
 %attribute attr { a }
@@ -79,7 +81,6 @@ import LexGram
 %attribute ident { String }
 %attribute pos { Posn }
 %attribute btype { TS.Type }
-
 %%
 
 Ident  : L_Ident 
@@ -239,16 +240,17 @@ Decl: BasicType Ident '=' RExp
     $$.pos = $2.pos;
     $$.btype = TS.sup $4.btype $1.btype;
     $4.env = $$.env;
-   }
-  | BasicType Ident '[' Integer ']' 
+  }
+  | BasicType Ident '[' RExp ']' 
   { 
     $$.attr = Abs.ArrayDeclaration $1.attr $2.attr $4.attr;
     $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
-    $$.err = Err.mkDeclErrs $1.btype $4.btype $$.env $2.ident (posLineCol $$.pos);
+    $$.err = Err.mkArrayDeclErrs $$.btype $$.env $2.ident (posLineCol $$.pos);
     $$.ident = $2.ident;
     $$.pos = $2.pos;
-    $$.btype = TS.mkArrElemTy (TS.ARRAY $4.attr $1.btype) $4.btype; 
+    $$.btype = TS.mkArrElemTy (TS.ARRAY $4.btype $1.btype) $4.btype;  
   }
+
 
 RExp: RExp '||' RExp2 
   {

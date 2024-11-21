@@ -48,7 +48,7 @@ transStm x = case x of
 transDecl :: AbsGram.Decl -> Result
 transDecl x = case x of
   AbsGram.VarDeclaration basictype ident rexp -> failure x
-  AbsGram.ArrayDeclaration basictype ident integer -> failure x
+  AbsGram.ArrayDeclaration basictype ident rexp -> failure x
 
 transRExp :: AbsGram.RExp -> Result
 transRExp x = case x of
