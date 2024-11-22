@@ -486,7 +486,7 @@ happyReduction_35 happy_x_2
 	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
 	case happyOut29 happy_x_2 of { happy_var_2 -> 
 	happyIn25
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ pos = (tokenPosn happy_var_1 ) , err = (Err.mkReturnErrs (env happySelfAttrs) ( posLineCol (pos happySelfAttrs) )) ++ (err happySubAttrs_2) , modifiedEnv = (env happySelfAttrs) , btype = (btype happySubAttrs_2) , attr = Abs.Return (attr happySubAttrs_2)  }; (happyConditions_2,happySubAttrs_2) = happy_var_2 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_2 } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ pos = (tokenPosn happy_var_1 ) , err = (Err.mkReturnErrs (env happySelfAttrs) (btype happySubAttrs_2) ( posLineCol (pos happySelfAttrs) )) ++ (err happySubAttrs_2) , modifiedEnv = (env happySelfAttrs) , btype = (btype happySubAttrs_2) , attr = Abs.Return (attr happySubAttrs_2)  }; (happyConditions_2,happySubAttrs_2) = happy_var_2 happyEmptyAttrs{ env = (env happySelfAttrs)  }; happyConditions = [] Prelude.++ happyConditions_2 } in (happyConditions,happySelfAttrs)
 	)}}
 
 #if __GLASGOW_HASKELL__ >= 710
@@ -549,7 +549,7 @@ happyReduction_39 (happy_x_8 `HappyStk`
 	case happyOut27 happy_x_4 of { happy_var_4 -> 
 	case happyOut24 happy_x_7 of { happy_var_7 -> 
 	happyIn26
-		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ err = (err happySubAttrs_4) ++ (Err.mkFuncErrs (err happySubAttrs_7) (ident happySubAttrs_2) ) , btype = (btype happySubAttrs_1) , modifiedEnv = (env happySelfAttrs) , attr = Abs.FunctionDeclaration (attr happySubAttrs_1) (attr happySubAttrs_2) (attr happySubAttrs_4) (attr happySubAttrs_7)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs; (happyConditions_2,happySubAttrs_2) = happy_var_2 happyEmptyAttrs; (happyConditions_4,happySubAttrs_4) = happy_var_4 happyEmptyAttrs{ env = E.insertVar "return" (posLineCol ( (pos happySubAttrs_2) )) (TS.Base TS.BOOL) E.emptyEnv , funcName = (ident happySubAttrs_2)  }; (happyConditions_7,happySubAttrs_7) = happy_var_7 happyEmptyAttrs{ env = (modifiedEnv happySubAttrs_4)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_2 Prelude.++ happyConditions_4 Prelude.++ happyConditions_7 } in (happyConditions,happySelfAttrs)
+		 (\happyInhAttrs -> let { happySelfAttrs = happyInhAttrs{ err = (err happySubAttrs_4) ++ (Err.mkFuncErrs (err happySubAttrs_7) (ident happySubAttrs_2) ) , btype = (btype happySubAttrs_1) , modifiedEnv = (env happySelfAttrs) , attr = Abs.FunctionDeclaration (attr happySubAttrs_1) (attr happySubAttrs_2) (attr happySubAttrs_4) (attr happySubAttrs_7)  }; (happyConditions_1,happySubAttrs_1) = happy_var_1 happyEmptyAttrs; (happyConditions_2,happySubAttrs_2) = happy_var_2 happyEmptyAttrs; (happyConditions_4,happySubAttrs_4) = happy_var_4 happyEmptyAttrs{ env = E.insertVar "return" (posLineCol ( (pos happySubAttrs_2) )) ( (btype happySelfAttrs) ) E.emptyEnv , funcName = (ident happySubAttrs_2)  }; (happyConditions_7,happySubAttrs_7) = happy_var_7 happyEmptyAttrs{ env = (modifiedEnv happySubAttrs_4)  }; happyConditions = [] Prelude.++ happyConditions_1 Prelude.++ happyConditions_2 Prelude.++ happyConditions_4 Prelude.++ happyConditions_7 } in (happyConditions,happySelfAttrs)
 	) `HappyStk` happyRest}}}}
 
 #if __GLASGOW_HASKELL__ >= 710

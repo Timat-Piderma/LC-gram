@@ -251,7 +251,7 @@ Stm: Decl
     $2.env = $$.env;
     $$.modifiedEnv = $$.env;
 
-    $$.err = (Err.mkReturnErrs $$.env ( posLineCol $$.pos)) ++ $2.err;
+    $$.err = (Err.mkReturnErrs $$.env $2.btype ( posLineCol $$.pos)) ++ $2.err;
 
     $$.pos = (tokenPosn $1);
   }
@@ -291,7 +291,7 @@ Decl: BasicType Ident '=' RExp
 
     $$.modifiedEnv = $$.env;
     $7.env = $4.modifiedEnv;
-    $4.env = E.insertVar "return" (posLineCol ($2.pos)) (TS.Base TS.BOOL) E.emptyEnv;
+    $4.env = E.insertVar "return" (posLineCol ($2.pos)) ($$.btype) E.emptyEnv;
 
     $4.funcName = $2.ident;
     $$.btype = $1.btype;

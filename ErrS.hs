@@ -42,9 +42,10 @@ mkParamErrs parName funcName env pos
     | otherwise = []
 
 mkFuncErrs :: [String] -> String -> [String]
-mkFuncErrs errs funcName = map (++ " inside function: '" ++ funcName ++ "'") errs
+mkFuncErrs errs funcName = map (++ " inside function '" ++ funcName ++ "'") errs
 
-mkReturnErrs :: EnvT -> (Int, Int) -> [String]
-mkReturnErrs env pos
-    | containsVar "return" env = []
+mkReturnErrs :: EnvT -> Type -> (Int, Int) -> [String]
+mkReturnErrs env retType pos
+    | getVarType "return" env == retType = []
+    | containsVar "return" env = [mkSerr (Base (ERROR ("Error: the return value " ++ typeToString retType ++" is not " ++ typeToString (getVarType "return" env)))) pos]
     | otherwise = [ mkSerr (Base (ERROR "Error: return statement outside function")) pos]
