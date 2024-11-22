@@ -13,7 +13,6 @@ import qualified TypeSystem as TS
 import qualified Env as E
 import qualified ErrS as Err
 import qualified AbsGram as Abs 
-
 import LexGram
 
 }
@@ -33,44 +32,46 @@ import LexGram
 %monad { Err } { (>>=) } { return }
 %tokentype {Token}
 %token
-  '!'      { PT _ (TS _ 1)  }
-  '!='     { PT _ (TS _ 2)  }
-  '%'      { PT _ (TS _ 3)  }
-  '&&'     { PT _ (TS _ 4)  }
-  '('      { PT _ (TS _ 5)  }
-  ')'      { PT _ (TS _ 6)  }
-  '*'      { PT _ (TS _ 7)  }
-  '+'      { PT _ (TS _ 8)  }
-  '-'      { PT _ (TS _ 9)  }
-  '/'      { PT _ (TS _ 10) }
-  ';'      { PT _ (TS _ 11) }
-  '<'      { PT _ (TS _ 12) }
-  '<='     { PT _ (TS _ 13) }
-  '='      { PT _ (TS _ 14) }
-  '=='     { PT _ (TS _ 15) }
-  '>'      { PT _ (TS _ 16) }
-  '>='     { PT _ (TS _ 17) }
-  'False'  { PT _ (TS _ 18) }
-  'String' { PT _ (TS _ 19) }
-  'True'   { PT _ (TS _ 20) }
-  '['      { PT _ (TS _ 21) }
-  ']'      { PT _ (TS _ 22) }
-  'bool'   { PT _ (TS _ 23) }
-  'char'   { PT _ (TS _ 24) }
-  'do'     { PT _ (TS _ 25) }
-  'else'   { PT _ (TS _ 26) }
-  'float'  { PT _ (TS _ 27) }
-  'if'     { PT _ (TS _ 28) }
-  'int'    { PT _ (TS _ 29) }
-  'while'  { PT _ (TS _ 30) }
-  '{'      { PT _ (TS _ 31) }
-  '||'     { PT _ (TS _ 32) }
-  '}'      { PT _ (TS _ 33) }
-  L_Ident  { PT _ (TV $$)   }
-  L_charac { PT _ (TC $$)   }
-  L_doubl  { PT _ (TD $$)   }
-  L_integ  { PT _ (TI $$)   }
-  L_quoted { PT _ (TL $$)   }
+  '!'        { PT _ (TS _ 1)  }
+  '!='       { PT _ (TS _ 2)  }
+  '%'        { PT _ (TS _ 3)  }
+  '&&'       { PT _ (TS _ 4)  }
+  '('        { PT _ (TS _ 5)  }
+  ')'        { PT _ (TS _ 6)  }
+  '*'        { PT _ (TS _ 7)  }
+  '+'        { PT _ (TS _ 8)  }
+  '-'        { PT _ (TS _ 9)  }
+  '/'        { PT _ (TS _ 10) }
+  ';'        { PT _ (TS _ 11) }
+  '<'        { PT _ (TS _ 12) }
+  '<='       { PT _ (TS _ 13) }
+  '='        { PT _ (TS _ 14) }
+  '=='       { PT _ (TS _ 15) }
+  '>'        { PT _ (TS _ 16) }
+  '>='       { PT _ (TS _ 17) }
+  'False'    { PT _ (TS _ 18) }
+  'String'   { PT _ (TS _ 19) }
+  'True'     { PT _ (TS _ 20) }
+  '['        { PT _ (TS _ 21) }
+  ']'        { PT _ (TS _ 22) }
+  'bool'     { PT _ (TS _ 23) }
+  'break'    { PT _ (TS _ 24) }
+  'char'     { PT _ (TS _ 25) }
+  'continue' { PT _ (TS _ 26) }
+  'do'       { PT _ (TS _ 27) }
+  'else'     { PT _ (TS _ 28) }
+  'float'    { PT _ (TS _ 29) }
+  'if'       { PT _ (TS _ 30) }
+  'int'      { PT _ (TS _ 31) }
+  'while'    { PT _ (TS _ 32) }
+  '{'        { PT _ (TS _ 33) }
+  '||'       { PT _ (TS _ 34) }
+  '}'        { PT _ (TS _ 35) }
+  L_Ident    { PT _ (TV $$)   }
+  L_charac   { PT _ (TC $$)   }
+  L_doubl    { PT _ (TD $$)   }
+  L_integ    { PT _ (TI $$)   }
+  L_quoted   { PT _ (TL $$)   }
 
 %attributetype {Attr a}
 %attribute res { Result }
@@ -81,6 +82,7 @@ import LexGram
 %attribute ident { String }
 %attribute pos { Posn }
 %attribute btype { TS.Type }
+
 %%
 
 Ident  : L_Ident 
@@ -208,17 +210,35 @@ Stm: Decl
   { 
     $$.attr = Abs.WhileDo $3.attr $6.attr; 
     $3.env = $$.env;
-    $6.env = $$.env;
+    $6.env = E.insertVar "continue" (posLineCol (tokenPosn $1)) (TS.Base TS.BOOL) (E.insertVar("break") (posLineCol (tokenPosn $1)) (TS.Base TS.BOOL) $$.env);
     $$.modifiedEnv = $$.env;
     $$.err = Err.mkIfErrs $3.btype $6.err (posLineCol (tokenPosn $1));
   }
   | 'do' '{' ListStm '}' 'while' '(' RExp ')' 
   { 
     $$.attr = Abs.DoWhile $3.attr $7.attr;
-    $3.env = $$.env;
+    $3.env = E.insertVar "continue" (posLineCol (tokenPosn $1)) (TS.Base TS.BOOL) (E.insertVar("break") (posLineCol (tokenPosn $1)) (TS.Base TS.BOOL) $$.env);	
     $7.env = $$.env;
     $$.modifiedEnv = $$.env;
     $$.err = Err.mkIfErrs $7.btype $3.err (posLineCol (tokenPosn $1)); 
+  }
+  | 'break' 
+  { 
+    $$.attr = Abs.Break;
+    $$.modifiedEnv = $$.env;
+    $$.err = if E.containsVar "break" $$.env
+            then []
+            else [Err.mkSerr (TS.Base (TS.ERROR "Break statement outside of loop")) (posLineCol $$.pos)];
+    $$.pos = (tokenPosn $1);
+  }
+  | 'continue' 
+  { 
+    $$.attr = Abs.Continue;
+    $$.modifiedEnv = $$.env;
+    $$.err = if E.containsVar "continue" $$.env
+            then []
+            else [Err.mkSerr (TS.Base (TS.ERROR "Continue statement outside of loop")) (posLineCol $$.pos)];
+    $$.pos = (tokenPosn $1);
   }
   | Ident '=' RExp 
   {  

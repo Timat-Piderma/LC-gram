@@ -15,6 +15,9 @@ IfThenElse.                 Stm ::= "if" "(" RExp ")" "{" [Stm] "}" "else" "{" [
 WhileDo.                    Stm ::= "while" "(" RExp ")" "{" [Stm] "}";
 DoWhile.                    Stm ::= "do" "{" [Stm] "}" "while" "(" RExp ")";
 
+Break.                      Stm ::= "break";
+Continue.                   Stm ::= "continue";
+
 Assignment.                 Stm ::= Ident "=" RExp;
 
 Or.                         RExp ::= RExp "||" RExp2;

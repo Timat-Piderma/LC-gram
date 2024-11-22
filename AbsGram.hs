@@ -30,6 +30,8 @@ data Stm
     | IfThenElse RExp [Stm] [Stm]
     | WhileDo RExp [Stm]
     | DoWhile [Stm] RExp
+    | Break
+    | Continue
     | Assignment Ident RExp
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
