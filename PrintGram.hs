@@ -210,3 +210,9 @@ instance Print AbsGram.RExp where
     AbsGram.CharValue c -> prPrec i 4 (concatD [prt 0 c])
     AbsGram.BooleanValue boolean -> prPrec i 4 (concatD [prt 0 boolean])
     AbsGram.VarValue id_ -> prPrec i 4 (concatD [prt 0 id_])
+    AbsGram.FuncCall id_ rexps -> prPrec i 4 (concatD [prt 0 id_, doc (showString "("), prt 0 rexps, doc (showString ")")])
+
+instance Print [AbsGram.RExp] where
+  prt _ [] = concatD []
+  prt _ [x] = concatD [prt 0 x]
+  prt _ (x:xs) = concatD [prt 0 x, doc (showString ","), prt 0 xs]

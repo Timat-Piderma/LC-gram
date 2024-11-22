@@ -49,4 +49,7 @@ CharValue.                  RExp4 ::= Char;
 BooleanValue.               RExp4 ::= Boolean;
 VarValue.                   RExp4 ::= Ident;
 
+FuncCall.                   RExp4 ::= Ident "(" [RExp] ")";
+separator RExp ",";
+
 coercions RExp 4;

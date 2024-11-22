@@ -66,6 +66,7 @@ data RExp
     | CharValue Char
     | BooleanValue Boolean
     | VarValue Ident
+    | FuncCall Ident [RExp]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 newtype Ident = Ident String

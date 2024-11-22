@@ -29,6 +29,7 @@ import LexGram
 %name pRExp2 RExp2
 %name pRExp3 RExp3
 %name pRExp4 RExp4
+%name pListRExp ListRExp
 %name pRExp1 RExp1
 -- no lexer declaration
 %monad { Err } { (>>=) } { return }
@@ -87,9 +88,11 @@ import LexGram
 %attribute pos { Posn }
 %attribute btype { TS.Type }
 %attribute funcName { String }
+%attribute paramTypes { [TS.Type] }
 
 %%
-  Ident  : L_Ident 
+
+Ident  : L_Ident 
   { 
     $$.attr = Abs.Ident $1;
     $$.ident = $1;
@@ -230,7 +233,7 @@ Stm: Decl
   { 
     $$.attr = Abs.Break;
     $$.modifiedEnv = $$.env;
-    $$.err = if E.containsVar "break" $$.env
+    $$.err = if E.containsEntry "break" $$.env
             then []
             else [Err.mkSerr (TS.Base (TS.ERROR "Break statement outside of loop")) (posLineCol $$.pos)];
     $$.pos = (tokenPosn $1);
@@ -239,7 +242,7 @@ Stm: Decl
   { 
     $$.attr = Abs.Continue;
     $$.modifiedEnv = $$.env;
-    $$.err = if E.containsVar "continue" $$.env
+    $$.err = if E.containsEntry "continue" $$.env
             then []
             else [Err.mkSerr (TS.Base (TS.ERROR "Continue statement outside of loop")) (posLineCol $$.pos)];
     $$.pos = (tokenPosn $1);
@@ -259,7 +262,7 @@ Stm: Decl
   {  
     $$.attr = Abs.Assignment $1.attr $3.attr;
     $$.modifiedEnv = E.insertVar $1.ident (posLineCol $$.pos) $$.btype $$.env;
-    $$.err = Err.mkAssignmentErrs (E.getVarType $1.ident $$.env) $3.btype (posLineCol $$.pos);
+    $$.err = Err.mkAssignmentErrs (E.getVarType $1.ident $$.env) $3.btype (posLineCol $$.pos) ++ $3.err;
     $$.ident = $1.ident;
     $$.pos = $1.pos;
     $$.btype = TS.sup (E.getVarType $1.ident $$.env) (E.getVarType $3.ident $$.env);
@@ -270,7 +273,7 @@ Decl: BasicType Ident '=' RExp
   {   
     $$.attr = Abs.VarDeclaration $1.attr $2.attr $4.attr;
     $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
-    $$.err = Err.mkDeclErrs $1.btype $4.btype $$.env $2.ident (posLineCol $$.pos); 
+    $$.err = Err.mkDeclErrs $1.btype $4.btype $$.env $2.ident (posLineCol $$.pos) ++ $4.err; 
     $$.ident = $2.ident;
     $$.pos = $2.pos;
     $$.btype = TS.sup $4.btype $1.btype;
@@ -280,7 +283,7 @@ Decl: BasicType Ident '=' RExp
   { 
     $$.attr = Abs.ArrayDeclaration $1.attr $2.attr $4.attr;
     $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $$.btype $$.env;
-    $$.err = Err.mkArrayDeclErrs $4.btype $$.env $2.ident (posLineCol $$.pos);
+    $$.err = Err.mkArrayDeclErrs $4.btype $$.env $2.ident (posLineCol $$.pos) ++ $4.err;
     $$.ident = $2.ident;
     $$.pos = $2.pos;
     $$.btype = (TS.ARRAY $4.btype $1.btype);  
@@ -289,7 +292,7 @@ Decl: BasicType Ident '=' RExp
   { 
     $$.attr = Abs.FunctionDeclaration $1.attr $2.attr $4.attr $7.attr; 
 
-    $$.modifiedEnv = $$.env;
+    $$.modifiedEnv = E.insertFunc $2.ident (posLineCol $$.pos) $1.btype $4.paramTypes $$.env;
     $7.env = $4.modifiedEnv;
     $4.env = E.insertVar "return" (posLineCol ($2.pos)) ($$.btype) E.emptyEnv;
 
@@ -304,6 +307,8 @@ ListParam: {- empty -}
     $$.attr = []; 
     $$.modifiedEnv = $$.env;
     $$.err = [];
+
+    $$.paramTypes = [];
   }
   | Param 
   { 
@@ -312,6 +317,8 @@ ListParam: {- empty -}
     $$.modifiedEnv = $1.modifiedEnv;
     $1.funcName = $$.funcName;
     $$.err = $1.err;
+
+    $$.paramTypes = [$1.btype];
   }
   | Param ',' ListParam 
   { 
@@ -324,6 +331,8 @@ ListParam: {- empty -}
     $3.funcName = $$.funcName;
 
     $$.err = $1.err ++ $3.err;
+
+    $$.paramTypes = $1.btype : $3.paramTypes;
   }
 
 Param : BasicType Ident 
@@ -335,6 +344,8 @@ Param : BasicType Ident
     $$.pos = $2.pos;
 
     $$.err = Err.mkParamErrs $2.ident $$.funcName $$.env (posLineCol $$.pos);
+
+    $$.btype = $1.btype;
   }
 
 RExp: RExp '||' RExp2 
@@ -505,10 +516,19 @@ RExp4: Integer
   | Ident  
   { 
     $$.attr = Abs.VarValue $1.attr;
-    $$.err = if E.containsVar $1.ident $$.env
+    $$.err = if E.containsEntry $1.ident $$.env
             then []
             else [Err.mkSerr (TS.Base (TS.ERROR ("Variable " ++ $1.ident ++ " not declared"))) (posLineCol $1.pos)];
     $$.btype = (E.getVarType $1.ident $$.env);
+  }
+  
+  | Ident '(' ListRExp ')' 
+  { 
+    $$.attr = Abs.FuncCall $1.attr $3.attr;
+    $3.env = $$.env;
+
+    $$.btype = (E.getFuncType $1.ident $$.env);
+    $$.err = (Err.mkFuncCallErrs $1.ident $3.paramTypes $$.env (posLineCol $1.pos)) ++ $3.err;
   }
   | '(' RExp ')'  
   { 
@@ -516,6 +536,31 @@ RExp4: Integer
     $$.err = $2.err;
     $$.btype = $2.btype;
     $2.env = $$.env;
+  }
+
+ListRExp: {- empty -} 
+  { 
+    $$.attr = [];
+
+    $$.err = [];
+    $$.paramTypes = [];
+  }
+  | RExp 
+  { 
+    $$.attr = (:[]) $1.attr; 
+    $1.env = $$.env;
+
+    $$.err = $1.err;
+    $$.paramTypes = [$1.btype];
+  }
+  | RExp ',' ListRExp 
+  { 
+    $$.attr = (:) $1.attr $3.attr; 
+    $1.env = $$.env;
+    $2.env = $$.env;
+
+    $$.err = $1.err ++ $3.err;
+    $$.paramTypes = $1.btype : $3.paramTypes;
   }
 
 RExp1 : RExp2 

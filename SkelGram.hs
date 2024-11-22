@@ -80,3 +80,4 @@ transRExp x = case x of
   AbsGram.CharValue char -> failure x
   AbsGram.BooleanValue boolean -> failure x
   AbsGram.VarValue ident -> failure x
+  AbsGram.FuncCall ident rexps -> failure x
