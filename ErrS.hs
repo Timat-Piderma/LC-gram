@@ -35,3 +35,16 @@ mkArrayDeclErrs indexType env varName pos
     | containsVar varName env = [mkSerr (Base (ERROR ("Variable '" ++ varName ++ "' already declared at: " ++ show (getVarPos varName env)))) pos]
     | sup indexType (Base INT) /= Base INT = [ mkSerr (Base (ERROR "Error: array index must be an integer")) pos]
     | otherwise = [] 
+
+mkParamErrs :: String -> String -> EnvT -> (Int, Int) -> [String]
+mkParamErrs parName funcName env pos
+    | containsVar parName env = [mkSerr (Base (ERROR ("Duplicate paramater '" ++ parName ++ "' in function declaration: '" ++ funcName ++ "'"))) pos]
+    | otherwise = []
+
+mkFuncErrs :: [String] -> String -> [String]
+mkFuncErrs errs funcName = map (++ " inside function: '" ++ funcName ++ "'") errs
+
+mkReturnErrs :: EnvT -> (Int, Int) -> [String]
+mkReturnErrs env pos
+    | containsVar "return" env = []
+    | otherwise = [ mkSerr (Base (ERROR "Error: return statement outside function")) pos]
