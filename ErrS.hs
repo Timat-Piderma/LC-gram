@@ -23,7 +23,7 @@ mkIfErrs t errs pos = case t of
 
 mkDeclErrs :: Type -> Type -> EnvT -> String -> (Int, Int) -> [String]
 mkDeclErrs t1 t2 env varName pos
-    | containsVar varName env = [mkSerr (Base (ERROR ("Variable '" ++ varName ++ "' already declared at: " ++ show (getVarPos varName env)))) pos] 
+    | containsEntry varName env = [mkSerr (Base (ERROR ("Variable '" ++ varName ++ "' already declared at: " ++ show (getVarPos varName env)))) pos] 
     | isERROR t1 && isERROR t2 = [ mkSerr t1 pos , mkSerr t2 pos]
     | isERROR t1 = [ mkSerr t1 pos]
     | isERROR t2 = [ mkSerr t2 pos]
@@ -32,13 +32,13 @@ mkDeclErrs t1 t2 env varName pos
 
 mkArrayDeclErrs :: Type -> EnvT -> String -> (Int, Int) -> [String]
 mkArrayDeclErrs indexType env varName pos
-    | containsVar varName env = [mkSerr (Base (ERROR ("Variable '" ++ varName ++ "' already declared at: " ++ show (getVarPos varName env)))) pos]
+    | containsEntry varName env = [mkSerr (Base (ERROR ("Variable '" ++ varName ++ "' already declared at: " ++ show (getVarPos varName env)))) pos]
     | sup indexType (Base INT) /= Base INT = [ mkSerr (Base (ERROR "Error: array index must be an integer")) pos]
     | otherwise = [] 
 
 mkParamErrs :: String -> String -> EnvT -> (Int, Int) -> [String]
 mkParamErrs parName funcName env pos
-    | containsVar parName env = [mkSerr (Base (ERROR ("Duplicate paramater '" ++ parName ++ "' in function declaration: '" ++ funcName ++ "'"))) pos]
+    | containsEntry parName env = [mkSerr (Base (ERROR ("Duplicate paramater '" ++ parName ++ "' in function declaration: '" ++ funcName ++ "'"))) pos]
     | otherwise = []
 
 mkFuncErrs :: [String] -> String -> [String]
@@ -47,5 +47,18 @@ mkFuncErrs errs funcName = map (++ " inside function '" ++ funcName ++ "'") errs
 mkReturnErrs :: EnvT -> Type -> (Int, Int) -> [String]
 mkReturnErrs env retType pos
     | getVarType "return" env == retType = []
-    | containsVar "return" env = [mkSerr (Base (ERROR ("Error: the return value " ++ typeToString retType ++" is not " ++ typeToString (getVarType "return" env)))) pos]
+    | containsEntry "return" env = [mkSerr (Base (ERROR ("Error: the return value " ++ typeToString retType ++" is not " ++ typeToString (getVarType "return" env)))) pos]
     | otherwise = [ mkSerr (Base (ERROR "Error: return statement outside function")) pos]
+
+mkFuncCallErrs :: String -> [Type] -> EnvT -> (Int, Int) -> [String]
+mkFuncCallErrs funcName params env pos
+    | containsEntry funcName env && (params == getFuncParams funcName env) = []
+    | containsEntry funcName env && (length params /=  length (getFuncParams funcName env)) = [mkSerr (Base (ERROR ("Error: function '" ++ funcName ++ "' expects " ++ show (length (getFuncParams funcName env)) ++ " parameters"))) pos]
+    | containsEntry funcName env = mkFuncCallParamErrs funcName params (getFuncParams funcName env) pos
+    | otherwise = [] -- If the function has not been declared it will be caught by the type checker
+
+mkFuncCallParamErrs :: String -> [Type] -> [Type] -> (Int, Int) -> [String]
+mkFuncCallParamErrs _ [] [] _= []
+mkFuncCallParamErrs funcName (x:xs) (y:ys) pos
+    | x == y    = mkFuncCallParamErrs funcName xs ys pos
+    | otherwise = mkSerr (Base (ERROR ("Error: can't match " ++ typeToString x ++ " with expected type " ++ typeToString y ++ " in function '" ++ funcName ++ "' call"))) pos : mkFuncCallParamErrs funcName xs ys pos
