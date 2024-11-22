@@ -26,6 +26,7 @@ data Boolean = Boolean_True | Boolean_False
 
 data Stm
     = Declaration Decl
+    | Return RExp
     | IfThen RExp [Stm]
     | IfThenElse RExp [Stm] [Stm]
     | WhileDo RExp [Stm]
@@ -38,6 +39,10 @@ data Stm
 data Decl
     = VarDeclaration BasicType Ident RExp
     | ArrayDeclaration BasicType Ident RExp
+    | FunctionDeclaration BasicType Ident [Param] [Stm]
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+data Param = Parameter BasicType Ident
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data RExp

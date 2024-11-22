@@ -8,6 +8,11 @@ Declaration.                Stm ::= Decl;
 
 VarDeclaration.             Decl ::= BasicType Ident "=" RExp;
 ArrayDeclaration.           Decl ::= BasicType Ident "[" RExp "]";
+FunctionDeclaration.        Decl ::= BasicType Ident "(" [Param] ")" "{" [Stm] "}";
+separator Param ",";
+
+Parameter.                  Param ::= BasicType Ident;
+Return.                     Stm ::= "return" RExp;
 
 IfThen.                     Stm ::= "if" "(" RExp ")" "{" [Stm] "}";
 IfThenElse.                 Stm ::= "if" "(" RExp ")" "{" [Stm] "}" "else" "{" [Stm] "}";

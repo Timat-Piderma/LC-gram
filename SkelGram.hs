@@ -39,6 +39,7 @@ transBoolean x = case x of
 transStm :: AbsGram.Stm -> Result
 transStm x = case x of
   AbsGram.Declaration decl -> failure x
+  AbsGram.Return rexp -> failure x
   AbsGram.IfThen rexp stms -> failure x
   AbsGram.IfThenElse rexp stms1 stms2 -> failure x
   AbsGram.WhileDo rexp stms -> failure x
@@ -51,6 +52,11 @@ transDecl :: AbsGram.Decl -> Result
 transDecl x = case x of
   AbsGram.VarDeclaration basictype ident rexp -> failure x
   AbsGram.ArrayDeclaration basictype ident rexp -> failure x
+  AbsGram.FunctionDeclaration basictype ident params stms -> failure x
+
+transParam :: AbsGram.Param -> Result
+transParam x = case x of
+  AbsGram.Parameter basictype ident -> failure x
 
 transRExp :: AbsGram.RExp -> Result
 transRExp x = case x of

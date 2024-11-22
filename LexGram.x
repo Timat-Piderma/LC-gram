@@ -28,7 +28,7 @@ $u = [. \n]          -- universal: any character
 
 -- Symbols and non-identifier-like reserved words
 
-@rsyms = \; | \= | \[ | \] | \( | \) | \{ | \} | \| \| | \& \& | \! | \= \= | \! \= | \< | \> | \< \= | \> \= | \+ | \- | \* | \/ | \%
+@rsyms = \; | \= | \[ | \] | \( | \) | \{ | \} | \, | \| \| | \& \& | \! | \= \= | \! \= | \< | \> | \< \= | \> \= | \+ | \- | \* | \/ | \%
 
 :-
 
@@ -160,21 +160,22 @@ eitherResIdent tv s = treeFind resWords
 -- | The keywords and symbols of the language organized as binary search tree.
 resWords :: BTree
 resWords =
-  b "False" 18
-    (b "-" 9
+  b "False" 19
+    (b "-" 10
        (b "(" 5
           (b "%" 3 (b "!=" 2 (b "!" 1 N N) N) (b "&&" 4 N N))
-          (b "*" 7 (b ")" 6 N N) (b "+" 8 N N)))
-       (b "=" 14
-          (b "<" 12 (b ";" 11 (b "/" 10 N N) N) (b "<=" 13 N N))
-          (b ">" 16 (b "==" 15 N N) (b ">=" 17 N N))))
-    (b "do" 27
-       (b "bool" 23
-          (b "[" 21 (b "True" 20 (b "String" 19 N N) N) (b "]" 22 N N))
-          (b "char" 25 (b "break" 24 N N) (b "continue" 26 N N)))
-       (b "while" 32
-          (b "if" 30 (b "float" 29 (b "else" 28 N N) N) (b "int" 31 N N))
-          (b "||" 34 (b "{" 33 N N) (b "}" 35 N N))))
+          (b "+" 8 (b "*" 7 (b ")" 6 N N) N) (b "," 9 N N)))
+       (b "=" 15
+          (b "<" 13 (b ";" 12 (b "/" 11 N N) N) (b "<=" 14 N N))
+          (b ">" 17 (b "==" 16 N N) (b ">=" 18 N N))))
+    (b "else" 29
+       (b "bool" 24
+          (b "[" 22 (b "True" 21 (b "String" 20 N N) N) (b "]" 23 N N))
+          (b "continue" 27
+             (b "char" 26 (b "break" 25 N N) N) (b "do" 28 N N)))
+       (b "while" 34
+          (b "int" 32 (b "if" 31 (b "float" 30 N N) N) (b "return" 33 N N))
+          (b "||" 36 (b "{" 35 N N) (b "}" 37 N N))))
   where
   b s n = B bs (TS bs n)
     where

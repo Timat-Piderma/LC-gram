@@ -164,6 +164,7 @@ instance Print AbsGram.Boolean where
 instance Print AbsGram.Stm where
   prt i = \case
     AbsGram.Declaration decl -> prPrec i 0 (concatD [prt 0 decl])
+    AbsGram.Return rexp -> prPrec i 0 (concatD [doc (showString "return"), prt 0 rexp])
     AbsGram.IfThen rexp stms -> prPrec i 0 (concatD [doc (showString "if"), doc (showString "("), prt 0 rexp, doc (showString ")"), doc (showString "{"), prt 0 stms, doc (showString "}")])
     AbsGram.IfThenElse rexp stms1 stms2 -> prPrec i 0 (concatD [doc (showString "if"), doc (showString "("), prt 0 rexp, doc (showString ")"), doc (showString "{"), prt 0 stms1, doc (showString "}"), doc (showString "else"), doc (showString "{"), prt 0 stms2, doc (showString "}")])
     AbsGram.WhileDo rexp stms -> prPrec i 0 (concatD [doc (showString "while"), doc (showString "("), prt 0 rexp, doc (showString ")"), doc (showString "{"), prt 0 stms, doc (showString "}")])
@@ -176,6 +177,16 @@ instance Print AbsGram.Decl where
   prt i = \case
     AbsGram.VarDeclaration basictype id_ rexp -> prPrec i 0 (concatD [prt 0 basictype, prt 0 id_, doc (showString "="), prt 0 rexp])
     AbsGram.ArrayDeclaration basictype id_ rexp -> prPrec i 0 (concatD [prt 0 basictype, prt 0 id_, doc (showString "["), prt 0 rexp, doc (showString "]")])
+    AbsGram.FunctionDeclaration basictype id_ params stms -> prPrec i 0 (concatD [prt 0 basictype, prt 0 id_, doc (showString "("), prt 0 params, doc (showString ")"), doc (showString "{"), prt 0 stms, doc (showString "}")])
+
+instance Print [AbsGram.Param] where
+  prt _ [] = concatD []
+  prt _ [x] = concatD [prt 0 x]
+  prt _ (x:xs) = concatD [prt 0 x, doc (showString ","), prt 0 xs]
+
+instance Print AbsGram.Param where
+  prt i = \case
+    AbsGram.Parameter basictype id_ -> prPrec i 0 (concatD [prt 0 basictype, prt 0 id_])
 
 instance Print AbsGram.RExp where
   prt i = \case

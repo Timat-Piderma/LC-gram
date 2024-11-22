@@ -23,6 +23,8 @@ import LexGram
 %name pBoolean Boolean
 %name pStm Stm
 %name pDecl Decl
+%name pListParam ListParam
+%name pParam Param
 %name pRExp RExp
 %name pRExp2 RExp2
 %name pRExp3 RExp3
@@ -40,33 +42,35 @@ import LexGram
   ')'        { PT _ (TS _ 6)  }
   '*'        { PT _ (TS _ 7)  }
   '+'        { PT _ (TS _ 8)  }
-  '-'        { PT _ (TS _ 9)  }
-  '/'        { PT _ (TS _ 10) }
-  ';'        { PT _ (TS _ 11) }
-  '<'        { PT _ (TS _ 12) }
-  '<='       { PT _ (TS _ 13) }
-  '='        { PT _ (TS _ 14) }
-  '=='       { PT _ (TS _ 15) }
-  '>'        { PT _ (TS _ 16) }
-  '>='       { PT _ (TS _ 17) }
-  'False'    { PT _ (TS _ 18) }
-  'String'   { PT _ (TS _ 19) }
-  'True'     { PT _ (TS _ 20) }
-  '['        { PT _ (TS _ 21) }
-  ']'        { PT _ (TS _ 22) }
-  'bool'     { PT _ (TS _ 23) }
-  'break'    { PT _ (TS _ 24) }
-  'char'     { PT _ (TS _ 25) }
-  'continue' { PT _ (TS _ 26) }
-  'do'       { PT _ (TS _ 27) }
-  'else'     { PT _ (TS _ 28) }
-  'float'    { PT _ (TS _ 29) }
-  'if'       { PT _ (TS _ 30) }
-  'int'      { PT _ (TS _ 31) }
-  'while'    { PT _ (TS _ 32) }
-  '{'        { PT _ (TS _ 33) }
-  '||'       { PT _ (TS _ 34) }
-  '}'        { PT _ (TS _ 35) }
+  ','        { PT _ (TS _ 9)  }
+  '-'        { PT _ (TS _ 10) }
+  '/'        { PT _ (TS _ 11) }
+  ';'        { PT _ (TS _ 12) }
+  '<'        { PT _ (TS _ 13) }
+  '<='       { PT _ (TS _ 14) }
+  '='        { PT _ (TS _ 15) }
+  '=='       { PT _ (TS _ 16) }
+  '>'        { PT _ (TS _ 17) }
+  '>='       { PT _ (TS _ 18) }
+  'False'    { PT _ (TS _ 19) }
+  'String'   { PT _ (TS _ 20) }
+  'True'     { PT _ (TS _ 21) }
+  '['        { PT _ (TS _ 22) }
+  ']'        { PT _ (TS _ 23) }
+  'bool'     { PT _ (TS _ 24) }
+  'break'    { PT _ (TS _ 25) }
+  'char'     { PT _ (TS _ 26) }
+  'continue' { PT _ (TS _ 27) }
+  'do'       { PT _ (TS _ 28) }
+  'else'     { PT _ (TS _ 29) }
+  'float'    { PT _ (TS _ 30) }
+  'if'       { PT _ (TS _ 31) }
+  'int'      { PT _ (TS _ 32) }
+  'return'   { PT _ (TS _ 33) }
+  'while'    { PT _ (TS _ 34) }
+  '{'        { PT _ (TS _ 35) }
+  '||'       { PT _ (TS _ 36) }
+  '}'        { PT _ (TS _ 37) }
   L_Ident    { PT _ (TV $$)   }
   L_charac   { PT _ (TC $$)   }
   L_doubl    { PT _ (TD $$)   }
@@ -82,10 +86,10 @@ import LexGram
 %attribute ident { String }
 %attribute pos { Posn }
 %attribute btype { TS.Type }
+%attribute funcName { String }
 
 %%
-
-Ident  : L_Ident 
+  Ident  : L_Ident 
   { 
     $$.attr = Abs.Ident $1;
     $$.ident = $1;
@@ -96,41 +100,41 @@ Ident  : L_Ident
 Double   : L_doubl  
   { 
     $$.attr = (read $1) :: Double;
-    $$.err = ["--DOUBLE--"];
+    $$.err = [];
     $$.btype = (TS.Base TS.FLOAT);
   }
 
 Integer  : L_integ  
   { 
     $$.attr = (read $1) :: Integer;
-    $$.err = ["--INTEGER--"];
+    $$.err = [];
     $$.btype = (TS.Base TS.INT);
   }
 
 Char    : L_charac
   { 
     $$.attr =  (read $1) :: Char;
-    $$.err = ["--CHARACTER--"];
+    $$.err = [];
     $$.btype = (TS.Base TS.CHAR);
   }
 
 String   : L_quoted 
   {
     $$.attr =  $1;
-    $$.err = ["--STRING--"];
+    $$.err = [];
     $$.btype = (TS.Base TS.STRING);
   }
 
 Boolean: 'True' 
   { 
     $$.attr = Abs.Boolean_True;
-    $$.err = ["--BOOLEAN--"];
+    $$.err = [];
     $$.btype = (TS.Base TS.BOOL);
   }
   | 'False' 
   { 
     $$.attr = Abs.Boolean_False;
-    $$.err = ["--BOOLEAN--"];
+    $$.err = [];
     $$.btype = (TS.Base TS.BOOL);
   }
 
@@ -240,6 +244,17 @@ Stm: Decl
             else [Err.mkSerr (TS.Base (TS.ERROR "Continue statement outside of loop")) (posLineCol $$.pos)];
     $$.pos = (tokenPosn $1);
   }
+  | 'return' RExp 
+  { 
+    $$.attr = Abs.Return $2.attr;
+    $$.btype = $2.btype;
+    $2.env = $$.env;
+    $$.modifiedEnv = $$.env;
+
+    $$.err = (Err.mkReturnErrs $$.env ( posLineCol $$.pos)) ++ $2.err;
+
+    $$.pos = (tokenPosn $1);
+  }
   | Ident '=' RExp 
   {  
     $$.attr = Abs.Assignment $1.attr $3.attr;
@@ -270,7 +285,57 @@ Decl: BasicType Ident '=' RExp
     $$.pos = $2.pos;
     $$.btype = (TS.ARRAY $4.btype $1.btype);  
   }
+  | BasicType Ident '(' ListParam ')' '{' ListStm '}' 
+  { 
+    $$.attr = Abs.FunctionDeclaration $1.attr $2.attr $4.attr $7.attr; 
 
+    $$.modifiedEnv = $$.env;
+    $7.env = $4.modifiedEnv;
+    $4.env = E.insertVar "return" (posLineCol ($2.pos)) (TS.Base TS.BOOL) E.emptyEnv;
+
+    $4.funcName = $2.ident;
+    $$.btype = $1.btype;
+
+    $$.err = $4.err ++ (Err.mkFuncErrs $7.err $2.ident);
+  }
+
+ListParam: {- empty -} 
+  { 
+    $$.attr = []; 
+    $$.modifiedEnv = $$.env;
+    $$.err = [];
+  }
+  | Param 
+  { 
+    $$.attr = (:[]) $1.attr; 
+    $1.env = $$.env;
+    $$.modifiedEnv = $1.modifiedEnv;
+    $1.funcName = $$.funcName;
+    $$.err = $1.err;
+  }
+  | Param ',' ListParam 
+  { 
+    $$.attr = (:) $1.attr $3.attr; 
+
+    $1.env = $$.env;
+    $3.env = $1.modifiedEnv;
+    $$.modifiedEnv = $3.modifiedEnv;
+    $1.funcName = $$.funcName;
+    $3.funcName = $$.funcName;
+
+    $$.err = $1.err ++ $3.err;
+  }
+
+Param : BasicType Ident 
+  { 
+    $$.attr = Abs.Parameter $1.attr $2.attr; 
+
+    $$.modifiedEnv = E.insertVar $2.ident (posLineCol $$.pos) $1.btype $$.env;
+
+    $$.pos = $2.pos;
+
+    $$.err = Err.mkParamErrs $2.ident $$.funcName $$.env (posLineCol $$.pos);
+  }
 
 RExp: RExp '||' RExp2 
   {
@@ -440,7 +505,9 @@ RExp4: Integer
   | Ident  
   { 
     $$.attr = Abs.VarValue $1.attr;
-    $$.err = $1.err;
+    $$.err = if E.containsVar $1.ident $$.env
+            then []
+            else [Err.mkSerr (TS.Base (TS.ERROR ("Variable " ++ $1.ident ++ " not declared"))) (posLineCol $1.pos)];
     $$.btype = (E.getVarType $1.ident $$.env);
   }
   | '(' RExp ')'  
