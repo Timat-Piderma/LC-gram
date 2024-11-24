@@ -292,14 +292,14 @@ Decl: BasicType Ident '=' RExp
   { 
     $$.attr = Abs.FunctionDeclaration $1.attr $2.attr $4.attr $7.attr; 
 
-    $$.modifiedEnv = E.insertFunc $2.ident (posLineCol $$.pos) $1.btype $4.paramTypes $$.env;
+    $$.modifiedEnv = E.insertFunc $2.ident (posLineCol $2.pos) $1.btype $4.paramTypes $$.env;
     $7.env = $4.modifiedEnv;
-    $4.env = E.insertVar "return" (posLineCol ($2.pos)) ($$.btype) E.emptyEnv;
+    $4.env = E.insertFunc $2.ident (posLineCol $$.pos) $1.btype $4.paramTypes (E.insertVar "return" (posLineCol ($2.pos)) ($$.btype) E.emptyEnv);
 
     $4.funcName = $2.ident;
     $$.btype = $1.btype;
 
-    $$.err = $4.err ++ (Err.mkFuncErrs $7.err $2.ident);
+    $$.err = $4.err ++ (Err.mkFuncDeclErrs $1.btype $$.env $2.ident $4.paramTypes (posLineCol ($2.pos))) ++ (Err.prettyFuncErr $7.err $2.ident);
   }
 
 ListParam: {- empty -} 
@@ -557,7 +557,7 @@ ListRExp: {- empty -}
   { 
     $$.attr = (:) $1.attr $3.attr; 
     $1.env = $$.env;
-    $2.env = $$.env;
+    $3.env = $$.env;
 
     $$.err = $1.err ++ $3.err;
     $$.paramTypes = $1.btype : $3.paramTypes;
