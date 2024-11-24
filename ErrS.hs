@@ -41,12 +41,18 @@ mkParamErrs parName funcName env pos
     | containsEntry parName env = [mkSerr (Base (ERROR ("Duplicate paramater '" ++ parName ++ "' in function declaration: '" ++ funcName ++ "'"))) pos]
     | otherwise = []
 
-mkFuncErrs :: [String] -> String -> [String]
-mkFuncErrs errs funcName = map (++ " inside function '" ++ funcName ++ "'") errs
+prettyFuncErr :: [String] -> String -> [String]
+prettyFuncErr errs funcName = map (++ " inside function '" ++ funcName ++ "'") errs
+
+mkFuncDeclErrs :: Type -> EnvT -> String -> [Type] -> (Int, Int) -> [String]
+mkFuncDeclErrs funcType env funcName params pos
+    | containsEntry funcName env = [mkSerr (Base (ERROR ("Function '" ++ funcName ++ "' already declared at: " ++ show (getVarPos funcName env)))) pos] 
+    | otherwise = []
 
 mkReturnErrs :: EnvT -> Type -> (Int, Int) -> [String]
 mkReturnErrs env retType pos
     | getVarType "return" env == retType = []
+    | isERROR retType = [mkSerr retType pos]
     | containsEntry "return" env = [mkSerr (Base (ERROR ("Error: the return value " ++ typeToString retType ++" is not " ++ typeToString (getVarType "return" env)))) pos]
     | otherwise = [ mkSerr (Base (ERROR "Error: return statement outside function")) pos]
 
